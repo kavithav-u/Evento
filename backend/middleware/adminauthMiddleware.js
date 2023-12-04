@@ -5,12 +5,12 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 
-const adminAuthProtect =  asyncHandler(async(req,res) => {
+const adminAuthProtect =  asyncHandler(async(req,res,next) => {
     try {
     let token;
 
     token = req.cookies.jwt;
-
+    console.log(token,"tokennn")
     if(token) {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
 

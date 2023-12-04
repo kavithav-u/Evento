@@ -2,20 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FaEdit, FaTrash } from 'react-icons/fa';
-import { useDeleteBannerMutation, useFetchBannerMutation, useUpdateBannerMutation } from '../../Slices/adminApiSlice';
+import { useDeleteGalleryMutation, useFetchGalleryMutation, useUpdateGalleryMutation } from '../../Slices/adminApiSlice';
 
-const BannerList = () => {
-  const [bannerData, setBannerData] = useState([]);
-  const [selectedBanner, setSelectedBanner] = useState(null);
+const GalleryList = () => {
+  const [galleryData, setGalleryData] = useState([]);
+  const [selectedGallery, setSelectedGallery] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editedDescription, setEditedDescription] = useState('');
-  const [editedPage, setEditedPage] = useState('');
   const [editedImage, setEditedImage] = useState('');
-  const [getBannerData] = useFetchBannerMutation();
-  const [updateBannerData] = useUpdateBannerMutation();
-  const [deleteBanner] = useDeleteBannerMutation();
+  const [getGalleryData] = useFetchGalleryMutation();
+  const [updateGalleryData] = useUpdateGalleryMutation();
+  const [deleteGallery] = useDeleteGalleryMutation();
+
+
   useEffect(() => {
-    fetchBanner();
+    fetchGallery();
   }, []);
 
   const handleImageUpload = async (e) => {
@@ -38,95 +39,92 @@ const BannerList = () => {
             toast.error('Error uploading image to Cloudinary');
         }
     }
-  }
+  };
 
-  const fetchBanner = async () => {
+  
+  const fetchGallery = async () => {
     try {
-      const res = await getBannerData().unwrap();
-      const myBannerData = res.banner;
-      setBannerData(myBannerData);
+      const res = await getGalleryData().unwrap();
+      const myGalleryData = res.gallery;
+      setGalleryData(myGalleryData);
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
   };
-
-  const handleEdit = (banner) => {
-    setSelectedBanner(banner);
-    setEditedDescription(banner.description || '');
-    setEditedPage(banner.page || '');
-    setEditedImage(banner.image || '')
+  const handleEdit = (gallery) => {
+    setSelectedGallery(gallery);
+    setEditedDescription(gallery.description || '');
+    setEditedImage(gallery.image || '')
     setIsModalOpen(true);
   };
 
-  const handleDelete = async(bannerId) => {
- try{
-  console.log(bannerId,"FFFF")
-  const res = await deleteBanner(bannerId).unwrap();
-      toast.success(res.message || 'Banner deleted successfully');
-      await fetchBanner();
-} catch (err) {
-  toast.error(err?.data?.message || err.error);
-}
-  }
+  const handleDelete = async(galleryId) => {
+    try{
+     console.log(galleryId,"FFFF")
+     const res = await deleteGallery(galleryId).unwrap();
+         toast.success(res.message || 'Gallery deleted successfully');
+         await fetchGallery();
+   } catch (err) {
+     toast.error(err?.data?.message || err.error);
+   }
+     };
 
-  const handleSaveBanner = async (editedBanner) => {
-    const updatedBanner = {
-      _id: selectedBanner._id,
-      description: editedDescription,
-      page: editedPage,
-      image: editedImage,
+     const handleSaveGallery = async (editedGallery) => {
+      const updatedGallery = {
+        _id: selectedGallery._id,
+        description: editedDescription,
+        image: editedImage,
+      };
+      console.log('Save Gallery:', updatedGallery);
+      try {
+      // Implement the logic to save the edited Gallery
+     
+      const res = await updateGalleryData(updatedGallery).unwrap();
+      console.log(res,"GGGG")
+      setIsModalOpen(false);
+      await fetchGallery();
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
     };
-    console.log('Save banner:', updatedBanner);
-    try {
-    // Implement the logic to save the edited banner
-   
-    const res = await updateBannerData(updatedBanner).unwrap();
-    console.log(res,"GGGG")
-    setIsModalOpen(false);
-    await fetchBanner();
-    } catch (err) {
-      toast.error(err?.data?.message || err.error);
-    }
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedBanner(null);
-  };
+  
+    const closeModal = () => {
+      setIsModalOpen(false);
+      setSelectedBanner(null);
+    };
+  
 
   return (
-    <div>
+<div>
       <div>
         <Link
-          to="/admin/banner/new"
+          to="/admin/gallery/new"
           className="bg-blue-500 text-white px-4 py-2 rounded-md"
         >
           Add New
         </Link>
         <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
-          <strong className="text-gray-700 font-medium">Banner List</strong>
+          <strong className="text-gray-700 font-medium">Gallery List</strong>
           <div className="border-x border-gray-200 rounded-sm mt-3">
             <table className="w-full text-gray-700">
               <thead>
                 <tr>
                   <th className="hidden">ID</th>
-                  <th>Page</th>
                   <th>Description</th>
                   <th>Image</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody className="space-y-2">
-                {bannerData && bannerData.length > 0 ? (
-                  bannerData.map((banner) => (
-                    <tr key={banner?._id}>
-                      <td>{banner?.page}</td>
-                      <td>{banner?.description}</td>
+                {galleryData && galleryData.length > 0 ? (
+                  galleryData.map((gallery) => (
+                    <tr key={gallery?._id}>
+                      <td>{gallery?.description}</td>
                       <td>
-                        {banner?.image && (
+                        {gallery?.image && (
                           <img
-                            src={banner?.image}
-                            alt={banner?.page}
+                            src={gallery?.image}
+                            alt={gallery?.page}
                             width="50"
                             height="50"
                           />
@@ -135,13 +133,13 @@ const BannerList = () => {
                       <td>
                         <button
                           className="text-green-600"
-                          onClick={() => handleEdit(banner)}
+                          onClick={() => handleEdit(gallery)}
                         >
                           <FaEdit />
                         </button>
                         <button
                           className="ml-3 text-red-700"
-                          onClick={() => handleDelete(banner)}
+                          onClick={() => handleDelete(gallery)}
                         >
                           <FaTrash />
                         </button>
@@ -150,7 +148,7 @@ const BannerList = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="3">No Banner found.</td>
+                    <td colSpan="3">No gallery found.</td>
                     <td>
                       <button>Edit</button>
                       <button>Delete</button>
@@ -162,8 +160,6 @@ const BannerList = () => {
           </div>
         </div>
       </div>
-
-      {/* Modal for editing */}
       {isModalOpen && (
         <div
           id="crud-modal"
@@ -177,7 +173,7 @@ const BannerList = () => {
               {/* Modal header */}
               <div className="flex items-center justify-between pb-4 border-b">
                 <h3 className="text-lg font-semibold text-white">
-                  Edit Banner
+                  Edit Gallery
                 </h3>
                 <button
                   type="button"
@@ -219,21 +215,6 @@ const BannerList = () => {
                 />
                 <br />
                 <label
-                  htmlFor="page"
-                  className="block mb-2 mt-2 text-sm font-medium text-white"
-                >
-                  Page:
-                </label>
-                <input
-                  type="text"
-                  id="page"
-                  value={editedPage}
-                  onChange={(e) => setEditedPage(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
-                  placeholder="Enter page"
-                />
-                <br />
-                <label
                   htmlFor="image"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
@@ -251,7 +232,7 @@ const BannerList = () => {
                 <div className="mt-4 flex space-x-4">
                   <button
                     type="button"
-                    onClick={handleSaveBanner}
+                    onClick={handleSaveGallery}
                     className="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300"
                   >
                     Save
@@ -269,8 +250,10 @@ const BannerList = () => {
           </div>
         </div>
       )}
-    </div>
-  );
-};
 
-export default BannerList;
+
+    </div> 
+     )
+}
+
+export default GalleryList

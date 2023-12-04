@@ -33,6 +33,12 @@ import CreateBannerScreen from './Screens/Admin/CreateBannerScreen.jsx';
 import AdminAboutScreen from './Screens/Admin/AdminAboutScreen.jsx';
 import CreateAboutScreen from './Screens/Admin/CreateAboutScreen.jsx';
 import Otp from './components/user/Otp.jsx';
+import BookingScreen from './Screens/user/BookingScreen.jsx';
+import GalleryScreen from './Screens/Admin/GalleryScreen.jsx';
+import CreateGallery from './Screens/Admin/CreateNewGallery.jsx';
+import Gallery from './Screens/user/Gallery.jsx';
+import SearchListing from './Screens/user/SearchListing.jsx';
+import AdminBookingScreen from './Screens/Admin/AdminBookingScreen.jsx';
 
 const router = createBrowserRouter([
   {
@@ -60,8 +66,8 @@ const router = createBrowserRouter([
         element:<Services />
       },
       {
-        path:"services",
-        element:<Services />
+        path:"gallery",
+        element:<Gallery />
       },
       {
         path:"/listing/:eventId",
@@ -79,7 +85,10 @@ const router = createBrowserRouter([
         path:"about",
         element:<AboutScreen />
       },
-      
+      {
+        path:"search",
+        element:<SearchListing />
+      },
       {
         path: 'profile',
         element: <PrivateRoute />,
@@ -87,6 +96,16 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <UserProfileScreen />,
+          },
+        ],
+      },      
+      {
+        path: 'bookings',
+        element: <PrivateRoute />,
+        children: [
+          {
+            index: true,
+            element: <BookingScreen />,
           },
         ],
       },
@@ -218,6 +237,46 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <CreateAboutScreen />,
+      },
+    ],
+  },,
+  {
+    path: 'gallery',
+    element: <AdminPrivateRoute />,
+    children: [
+      {
+        index: true,
+        element: <GalleryScreen />,
+      },
+    ],
+  },,
+  {
+    path: 'gallery/new',
+    element: <AdminPrivateRoute />,
+    children: [
+      {
+        index: true,
+        element: <CreateGallery />,
+      },
+    ],
+  },,
+  {
+    path: 'bookings',
+    element: <AdminPrivateRoute />,
+    children: [
+      {
+        index: true,
+        element: <AdminBookingScreen />,
+      },
+    ],
+  },,
+  {
+    path: 'bookings/new',
+    element: <AdminPrivateRoute />,
+    children: [
+      {
+        index: true,
+        element: <CreateCateringScreen />,
       },
     ],
   },,

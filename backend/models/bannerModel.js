@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 
 const bannerSchema = new mongoose.Schema({
   image: { 
-    type: String, 
+    type: Array,
     required: true 
 },
   page: { 

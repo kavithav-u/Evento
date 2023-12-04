@@ -14,7 +14,6 @@ const Otp = () => {
     const navigate = useNavigate();
     const searchParams = new URLSearchParams(location.search);
     const name = searchParams.get('name');
-    console.log(name,"name")
     const email = searchParams.get('email');
     const password = searchParams.get('password');
     
@@ -28,22 +27,20 @@ const Otp = () => {
     const otpSubmit = async (e) => {
         e.preventDefault();
         const enteredOTP = otp.join('');
-        console.log('OTPSD',enteredOTP);
         try {
-            const res = await verifyOtp({name,email,password,enteredOTP});
-
-            console.log(res,"RES");
-            dispatch(setCredentials({...res}));
-            if(res.data.success) {
+            const res = await verifyOtp({name,email,password,enteredOTP}).unwrap();
+          console.log(res,"res")
+            dispatch(setCredentials({...res.user}));
+            if(res.success) {
                 toast.success('OTP verification Successfully');
-                console.log('User created:', res.data.user);
                 navigate('/login');
               } else {
-                toast.error('OTP verification failed:', res.data.message);
+                toast.error('OTP verification failed:', res.message);
               }
             } catch (error) {
-              toast.error('An error occurred:', error);
-            }
+              console.error('Error in otpSubmit:', error);
+              toast.error('An error occurred:', error.message);
+            }            
           };
 
     const handleInputChange = (e, index) => {

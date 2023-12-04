@@ -6,11 +6,9 @@ import  asyncHandler from 'express-async-handler';
 
 const getAllEvent = async (req, res) => {
     try {
-      const events = await Event.find();
-      console.log(events,"EVENTS")
+      const sortedEvents = await Event.find().sort({ _id: -1 });
       const Banners = await Banner.findOne({page:'Services'});
-      console.log(Banners,"DFDDV")
-      res.status(200).json({ events, Banners });
+      res.status(200).json({ events: sortedEvents, Banners });
     } catch (error) {
       res.status(500).json({ message: "server issue" });
     }
@@ -19,9 +17,7 @@ const getAllEvent = async (req, res) => {
   const getAllEvents = async (req, res) => {
     try {
       const events = await Event.find({ isActive: true });
-      console.log(events,"EVENTS")
       const Banners = await Banner.findOne({page:'Services'});
-      console.log(Banners,"DFDDV")
       res.status(200).json({ events, Banners });
     } catch (error) {
       res.status(500).json({ message: "server issue" });
@@ -58,9 +54,7 @@ const getAllEvent = async (req, res) => {
   const editEvent = async (req,res) => {
     try {
       const { eventType, description, eventImage } = req.body;
-      console.log(req.body,"req.body")
       const eventId = req.body._id;
-      console.log(eventId,"eventId");
 
 
       const existingEvent = await Event.findById(eventId);

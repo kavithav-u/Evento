@@ -1,4 +1,6 @@
-import React from 'react'
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import {GoogleAuthProvider, getAuth, signInWithPopup} from 'firebase/auth';
 import { app } from '../../firebase';
 import { useGoogleAuthMutation } from '../../Slices/usersApiSlice';
@@ -11,6 +13,7 @@ export default function OAuth() {
 
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [googleAuth, {isLoading}] = useGoogleAuthMutation();
 
     const handleGoogleClick = async () => {
@@ -18,15 +21,14 @@ export default function OAuth() {
             const provider = new GoogleAuthProvider();
             const auth = getAuth(app)
             const result = await signInWithPopup(auth, provider)
-            console.log(result);
-
+           
             const res= await googleAuth({
                 name: result.user.displayName,
                 email: result.user.email,
                 image: result.user.photoURL,}).unwrap();
+                console.log("Re",res)
 
                 dispatch(setCredentials({...res}));
-                console.log(setCredentials,"AFTER")
                 navigate('/')
 
         } catch (error) {

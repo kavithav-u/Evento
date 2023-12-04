@@ -1,84 +1,78 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useTable } from 'react-table';
-import {useAdminGetUserMutation, useAdminActionUserMutation} from '../../Slices/adminApiSlice';
-import {toast} from 'react-toastify';
+import { useAdminGetUserMutation, useAdminActionUserMutation } from '../../Slices/adminApiSlice';
+import { toast } from 'react-toastify';
 
 
+function AdminUserList() {
+  const [userData, setUserData] = useState("");
+  const [getUserData] = useAdminGetUserMutation();
+  const [userAction] = useAdminActionUserMutation();
 
-function AdminUserList () {
+  useEffect(() => {
+    submitHandler();
+  }, []);
 
-    const [userData, setUserData] = useState("");
-    const [getUserData ] = useAdminGetUserMutation();
-    const [userAction] = useAdminActionUserMutation();
-
-    useEffect (()=> {
-        submitHandler();
-    },[]);
-
-
-    const submitHandler = async (e) => {
-      try {
-        const res = await getUserData().unwrap();
- 
-        const myData = res.users;
-        setUserData(myData);
-      } catch (err) {
-        toast.error(err?.data?.message || err.error);
-      }
-    };
-
-
-    const toggleBlock = async (userId) => {
-      try {
-        const res = await userAction({userId}).unwrap();
-        if(res.success) {
-          setUserData((prevUserData) =>
-        prevUserData.map((user) =>
-          user._id === userId ? { ...user, isActive: !user.isActive } : user
-        )
-      );
-        }
-      } catch (err) {
-        toast.error(err?.data?.message || err.error);
-      }
+  const submitHandler = async (e) => {
+    try {
+      const res = await getUserData().unwrap();
+      const myData = res.users;
+      setUserData(myData);
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
     }
+  };
 
+  const toggleBlock = async (userId) => {
+    try {
+      const res = await userAction({ userId }).unwrap();
+      if (res.success) {
+        setUserData((prevUserData) =>
+          prevUserData.map((user) =>
+            user._id === userId ? { ...user, isActive: !user.isActive } : user
+          )
+        );
+      }
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
 
   return (
-    <div>
-      <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
-        <strong className="text-gray-700 font-medium">User List</strong>
-        <div className="border-x border-gray-200 rounded-sm mt-3">
-          <table className="w-full text-gray-700">
+    <div className="overflow-x-auto">
+      <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+        <strong className="text-gray-700 font-medium block sm:inline">User List</strong>
+        <div className="overflow-x-auto">
+          <table className="w-full text-gray-700 table-auto">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>User Name</th>
-                <th>Email Address</th>
-                <th>Image</th>
-                <th>Actions</th>
+                <th className="py-2">ID</th>
+                <th className="py-2">User Name</th>
+                <th className="py-2">Email Address</th>
+                <th className="py-2">Image</th>
+                <th className="py-2">Actions</th>
               </tr>
             </thead>
             <tbody className="space-y-2">
               {userData && userData.length > 0 ? (
                 userData.map((user) => (
                   <tr key={user?._id}>
-                    <td>{user?._id}</td>
-                    <td>{user?.name}</td>
-                    <td>{user?.email}</td>
-                    <td>
+                    <td className="py-2">{user?._id}</td>
+                    <td className="py-2">{user?.name}</td>
+                    <td className="py-2">{user?.email}</td>
+                    <td className="py-2">
                       {user?.image ? (
                         <img
                           src={user?.image}
                           alt={`Image of ${user?.name}`}
-                          className="w-12 h-12"
+                          className="w-12 h-12 rounded-full"
                         />
                       ) : (
                         <span>No Image</span>
                       )}
                     </td>
-                    <td>
+                    <td className="py-2">
                       <span className="relative inline-block px-3 py-1 font-semibold leading-tight">
                         <span
                           className={`absolute inset-0 rounded-full ${
@@ -101,7 +95,7 @@ function AdminUserList () {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="3">No users found.</td>
+                  <td colSpan="5">No users found.</td>
                 </tr>
               )}
             </tbody>
@@ -111,6 +105,5 @@ function AdminUserList () {
     </div>
   );
 }
-
 
 export default AdminUserList;

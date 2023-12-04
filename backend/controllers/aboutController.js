@@ -3,7 +3,7 @@ import Banner from '../models/bannerModel.js';
 
 const getAbout = async(re,res) => {
     try {
-        const about = await About.find();
+        const about = await About.find().sort({_id:-1});
         res.status(200).json({success:true, about})
     } catch (error) {
         res.status(500).json({message:"Internal Server Error"})
@@ -53,12 +53,9 @@ const updateAbout = async (req,res) => {
 
     const deleteAbout = async(req, res) => {
         try {
-            console.log("req.body",req.body);
             const aboutId = req.body._id;
-            console.log(aboutId,"aboutId")
 
             const deletedAbout = await About.findByIdAndDelete(aboutId);
-            console.log("deletedAbout",deletedAbout)
             if(!deletedAbout) {
                 return res.status (404).json({error:"About not found"})
             } 

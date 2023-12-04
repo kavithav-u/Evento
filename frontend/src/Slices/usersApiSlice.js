@@ -31,9 +31,29 @@ export const userApiSlice = apiSlice.injectEndpoints({
           method: 'POST',
         }),
       }),
+      fetchHome: builder.mutation({
+        query: () => ({
+          url: `${USERS_URL}`,
+          method: 'get',
+          credentials: 'include',
+        }),
+      }),
+      fetchProfile: builder.mutation({
+        query: () => ({
+          url: `${USERS_URL}/profile`,
+          method: 'get',
+        }),
+      }),
       updateProfile: builder.mutation({
         query: (data) => ({
           url: `${USERS_URL}/profile`,
+          method: 'PUT',
+          body: data,
+        }),
+      }),
+      updatePassword: builder.mutation({
+        query: (data) => ({
+          url: `${USERS_URL}/updatePassword`,
           method: 'PUT',
           body: data,
         }),
@@ -70,7 +90,6 @@ export const userApiSlice = apiSlice.injectEndpoints({
         query: (cateringId) => ({
           url: `${USERS_URL}/details/${cateringId}`,
           method: 'get',
-          
           credentials: 'include',
         }),
       }),
@@ -81,17 +100,79 @@ export const userApiSlice = apiSlice.injectEndpoints({
           credentials: 'include',
         }),
       }),
+      fetchBookings: builder.mutation({
+        query: (userId) => ({
+          url: `${USERS_URL}/bookings/${userId}`,
+          method: 'get',
+          credentials: 'include',
+        }),
+      }),
+      createBookings: builder.mutation({
+        query: (data) => ({
+          url: `${USERS_URL}/bookings`,
+          method: 'post',
+          body:data,
+          credentials: 'include',
+        }),
+      }),
+      createBookings: builder.mutation({
+        query: (data) => ({
+          url: `${USERS_URL}/bookings`,
+          method: 'post',
+          body:data,
+          credentials: 'include',
+        }),
+      }),
+      cancelBookings: builder.mutation({
+        query: (bookingId) => ({
+          url: `${USERS_URL}/cancelBooking`,
+          method: 'put',
+          body:{ _id: bookingId },
+          credentials: 'include',
+        }),
+      }),
+      fetchGallery: builder.mutation({
+        query: () => ({
+          url: `${USERS_URL}/gallery`,
+          method: 'get',
+          credentials: 'include',
+        }),
+      }),
+      fetchSearch: builder.mutation({
+        query: () => ({
+          url: `${USERS_URL}/search`,
+          method: 'get',
+          credentials: 'include',
+        }),
+      }),
+      filterSearch: builder.mutation({
+        query: (data) => ({
+          url: `${USERS_URL}/search`,
+          method: 'post',
+          body:data,
+          credentials: 'include',
+        }),
+      }),
   }),
 });
 
 export const { useLoginMutation, 
               useLogoutMutation, 
-              useRegisterMutation, 
+              useRegisterMutation,
+              useFetchHomeMutation,
+              useFetchProfileMutation,
               useUpdateProfileMutation, 
+              useUpdatePasswordMutation,
               useGoogleAuthMutation,
               useServicesMutation,
               useFetchListingMutation, 
               useFetchDetailsMutation,
               useAboutMutation,
             useFetchCateringDetailsMutation,
-          useVerifyOTPMutation} = userApiSlice;
+          useVerifyOTPMutation,
+        useCreateBookingsMutation,
+        useCancelBookingsMutation,
+      useFetchBookingsMutation,
+    useFetchGalleryMutation,
+  useFetchSearchMutation,
+useFilterSearchMutation} = userApiSlice;

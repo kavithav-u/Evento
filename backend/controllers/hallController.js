@@ -6,7 +6,8 @@ import asyncHandler from 'express-async-handler';
 
 const getAllHalls = asyncHandler(async (req, res) => {
     try {
-        const halls = await Hall.find();
+        const halls = await Hall.find().sort({_id:-1});
+        
         res.status(200).json({success:true,halls});
     } catch (error) {
         res.status(500).json({message:"Server issue"});
@@ -25,7 +26,8 @@ const getHallDetails = async(req,res) => {
 
 const newHall = asyncHandler(async (req,res) => {
     try {
-        const {hallName, description, location,pricePerDay,hallImage,capacity, events} = req.body;
+        console.log(req.body,"FGFGFGFGFGGFG")
+        const {hallName, description, location,pricePerDay,hallImage,capacity, events, catering} = req.body;
 
         const existingHall = await Hall.findOne({hallName});
 
@@ -38,6 +40,7 @@ const newHall = asyncHandler(async (req,res) => {
                 location,
                 pricePerDay,
                 capacity,
+                catering,
                 hallImage,
                 events
             });
@@ -64,12 +67,41 @@ const adminActionHall = async (req,res) => {
     } catch (error) {
         res.status(500).json({success:false,message:"Internal server error"});
     }
-}
+};
+
+
+const editHall = async (req, res) => {
+    try {
+      const { location,hallName,capacity, description, hallImage } = req.body;
+      console.log(req.body,"FFFFFFff")
+        const HallId = req.body._id;
+      const existingHall = await Hall.findById(HallId);
+      if (!existingHall) {
+        res.status(404).json({ message: "Hall not found" });
+      } else {
+        existingHall.hallName = hallName;
+        existingHall.location = location;
+        existingHall.description = description;
+        existingHall.capacity = capacity;
+        existingHall.hallImage = hallImage
+        const updatedHall= await existingHall.save();
+  console.log(updatedHall,"ffgggg")
+        res.status(200).json({
+          message: "Hall updated successfully",
+          success: true,
+          Hall: updatedHall,
+        });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
 
 
 export  {
     getAllHalls,
     newHall,
     adminActionHall,
-    getHallDetails
+    getHallDetails,
+    editHall
 };

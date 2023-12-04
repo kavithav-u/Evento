@@ -1,17 +1,16 @@
 import React from 'react';
-
 import UserHeader from '../../components/user/userHeader.jsx';
 import Footer from '../../components/user/Footer.jsx';
-import About from '../../components/user/About.jsx';
+import GalleryComponent from '../../components/user/GalleryComponent.jsx';
 
-const AboutScreen = () => {
+const Gallery = () => {
   return (
-          <div>
+    <div>
         <UserHeader />
-        <About />
+        <GalleryComponent />
         <Footer />
     </div>
   )
 }
 
-export default AboutScreen
+export default Gallery

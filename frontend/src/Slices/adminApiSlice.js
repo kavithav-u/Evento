@@ -66,6 +66,14 @@ export const adminApiSlice = apiSlice.injectEndpoints({
         credentials: 'include',
       }),
     }),
+    updateHall: builder.mutation({
+      query: (data) => ({
+        url: `${ADMIN_URL}/halls/edit`,
+        method: 'put',
+        body:data,
+        credentials: 'include',
+      }),
+    }),
     createCatering: builder.mutation({
       query: (data) => ({
         url: `${ADMIN_URL}/caterings/new`,
@@ -188,6 +196,52 @@ export const adminApiSlice = apiSlice.injectEndpoints({
           credentials: 'include',
         }),
       }),
+      fetchGallery : builder.mutation({
+        query:() => ({
+          url: `${ADMIN_URL}/gallery`,
+          method:'GET',
+          credentials:'include'
+        })
+      }),
+      createGallery: builder.mutation({
+        query: (data) => ({
+          url: `${ADMIN_URL}/gallery/new`,
+          method: 'POST',
+          body:data,
+          credentials: 'include',
+        }),
+      }),
+      updateGallery: builder.mutation({
+        query: (data) => ({
+          url: `${ADMIN_URL}/gallery/edit`,
+          method: 'put',
+          body:data,
+          credentials: 'include',
+        }),
+      }),
+      deleteGallery: builder.mutation({
+        query: (data) => ({
+          url: `${ADMIN_URL}/gallery/delete`,
+          method: 'post',
+          body:data,
+          credentials: 'include',
+        }),
+      }),
+      fetchUserBookings : builder.mutation({
+        query:() => ({
+          url: `${ADMIN_URL}/bookings`,
+          method:'GET',
+          credentials:'include'
+        })
+      }),
+      adminActionBooking:builder.mutation({
+        query:(bookingId)=>({
+          url:`${ADMIN_URL}/bookings`,
+          method:"put",
+          body:bookingId,
+          credentials: 'include',
+        })
+      }),
   }),
 });
 
@@ -214,4 +268,11 @@ useDeleteBannerMutation,
 useFetchAboutMutation,
 useCreateAboutMutation,
 useUpdateAboutMutation,
-useDeleteAboutMutation } = adminApiSlice;           
+useDeleteAboutMutation,
+useFetchGalleryMutation,
+useCreateGalleryMutation,
+useUpdateGalleryMutation,
+useDeleteGalleryMutation, 
+useUpdateHallMutation,
+useFetchUserBookingsMutation,
+useAdminActionBookingMutation} = adminApiSlice;           

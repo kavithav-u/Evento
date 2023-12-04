@@ -6,7 +6,7 @@ import asyncHandler from 'express-async-handler';
 
 const getAllCaterings = asyncHandler(async (req,res) => {
     try {
-        const Caterings = await Catering. find();
+        const Caterings = await Catering. find().sort({_id:-1});
         res.status(200).json({success:true, Caterings})
     } catch (error) {
         res.status(500).json({message:"Internal Server Error"})

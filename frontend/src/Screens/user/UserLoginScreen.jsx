@@ -33,9 +33,7 @@ const UserLoginScreen = () => {
           return toast.warn("Please enter password")
         }else if(password.length < 6 ) {
           return toast.warn("Password needs atleast 6 character");
-        } else if (!/[!@#$%^&*]/.test(password)) {
-          return toast.warn("Password should contain at least one special character (!@#$%^&*)");
-        }
+        } 
         try {
           const res = await login({email, password}).unwrap()
           dispatch(setCredentials({...res}))

@@ -10,6 +10,11 @@ const CreateNewHall = () => {
     const [location, setLocation] = useState('');
     const [pricePerDay, setPricePerDay] = useState('');
     const [capacity, setCapacity] = useState('');
+    const [catering, setCatering] = useState(false);
+    const [decoration,setDecoration] = useState(false);
+    const [parking, setParking] = useState(false);
+    const [isAc, setIsAc] = useState(false);
+    const [photography, setPhotography] = useState(false);
     const [imageURLs, setImageURLs] = useState([]);
     const [selectedEvent, setSelectedEvent] = useState(''); 
     const [events, setEvents] = useState([]);
@@ -66,6 +71,11 @@ const handleImageUpload = async (e) => {
                 location,
                 pricePerDay,
                 capacity,
+                catering,
+                decoration,
+                parking,
+                isAc,
+                photography,
                 hallImage: imageURLs,
                 events : selectedEvent
             }
@@ -111,6 +121,7 @@ const handleImageUpload = async (e) => {
           class="border p-3 rounded-lg w-full focus:outline-none focus:ring focus:border-blue-300 appearance-none custom-number-input"
           />
           </div >
+          
 
 
         <input
@@ -132,6 +143,46 @@ const handleImageUpload = async (e) => {
             </option>
           ))}
         </select>
+        <label>
+    <input
+      type='checkbox'
+      checked={catering}
+      onChange={(e) => setCatering(e.target.checked)}
+    />
+    Catering
+  </label>
+  <label>
+    <input
+      type='checkbox'
+      checked={decoration}
+      onChange={(e) => setDecoration(e.target.checked)}
+    />
+    Decorations
+  </label>
+  <label>
+    <input
+      type='checkbox'
+      checked={parking}
+      onChange={(e) => setParking(e.target.checked)}
+    />
+    Parking
+  </label>
+  <label>
+    <input
+      type='checkbox'
+      checked={isAc}
+      onChange={(e) => setIsAc(e.target.checked)}
+    />
+    Is Ac
+  </label>
+  <label>
+    <input
+      type='checkbox'
+      checked={photography}
+      onChange={(e) => setPhotography(e.target.checked)}
+    />
+    Photography
+  </label>
         <input
           type='file'
           accept="image/*"

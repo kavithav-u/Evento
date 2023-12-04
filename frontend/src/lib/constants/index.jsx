@@ -23,12 +23,12 @@ export const DASHBOARD_SIDEBAR_LINKS = [
 		path: '/admin/userlist',
 		icon: <FaUsers />
 	},
-	{
-		key: 'orders',
-		label: 'Orders',
-		path: '/orders',
-		icon: <HiOutlineShoppingCart />
-	},
+	// {
+	// 	key: 'orders',
+	// 	label: 'Orders',
+	// 	path: '/orders',
+	// 	icon: <HiOutlineShoppingCart />
+	// },
 	{
 		key: 'events',
 		label: 'Events',
@@ -58,7 +58,20 @@ export const DASHBOARD_SIDEBAR_LINKS = [
 		label: 'About',
 		path: '/admin/about',
 		icon: <PiBeerSteinBold />
-	}
+	},
+		{
+		key: 'gallery',
+		label: 'Gallery',
+		path: '/admin/gallery',
+		icon: <PiBeerSteinBold />
+	},
+		{
+		key: 'bookings',
+		label: 'Bookings',
+		path: '/admin/bookings',
+		icon: <PiBeerSteinBold />
+	},
+	
 ]
 
 export const DASHBOARD_SIDEBAR_BOTTOM_LINKS = [

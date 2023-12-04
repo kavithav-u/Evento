@@ -45,8 +45,6 @@ const UserRegisterScreen = () => {
             try{
                 const res= await register({name, email, password}).unwrap();
                 dispatch(setCredentials({...res}));
-                console.log(setCredentials,"sest")
-                console.log(res,"DDD");
                 navigate(`/Otp?name=${name}&email=${email}&password=${password}`);
             } catch(err) {
                 toast.error(err?.data?.message || err.error);

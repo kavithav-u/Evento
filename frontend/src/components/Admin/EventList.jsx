@@ -4,7 +4,7 @@ import { useEffect, useState} from 'react';
 import {toast} from 'react-toastify';
 import {Link} from 'react-router-dom';
 import { FaEdit, FaTrash } from 'react-icons/fa';
-
+import { truncateDescription } from '../user/Banner';
 import { useAdminActionEventsMutation } from '../../Slices/adminApiSlice';
 
 
@@ -98,14 +98,6 @@ const closeModal = () => {
   setSelectedEvent(null);
 };
 
-  const truncateDescription = (description, maxCharacters) => {
-    if (description.length > maxCharacters) {
-      const truncated = description.slice(0, maxCharacters);
-      return `${truncated}...`;
-    }
-  
-    return description;
-  };
 
   const fetchEvents = async () => {
     try {

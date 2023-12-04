@@ -3,7 +3,7 @@ import Banner from '../models/bannerModel.js';
 
 const getAllBanner = async (req,res) => {
     try {
-    const banner = await Banner.find();
+    const banner = await Banner.find().sort({_id:-1});
     res.status(200).json({success:true,banner})
     } catch (error) {
         res.status(500).json({message:"Internal server error"})
@@ -13,13 +13,10 @@ const getAllBanner = async (req,res) => {
 const newBanner = async (req,res) => {
     try {
         const {page,image,description} = req.body;
-        console.log(req.body,"REQss>BODY");
         let existing = await Banner.findOne({page});
-        console.log("RRRRr")
         if(existing) {
             res.status(409).json({message:"Banner already exists"});
         } else {
-            console.log("RRRRR")
             const newBanner = await Banner.create ({
                 page,
                 image,
@@ -35,7 +32,6 @@ const newBanner = async (req,res) => {
 const getBannerPages = async(req,res) => {
     try {
         const banners = await Banner.findOne({page});
-        console.log(banners,"BANENRs");
         res.status(201).json({message:" xcftgvhbjnkml", success:true, Banner:banners})
     } catch (error) {
         res.status(500).json({message:"Internal Server Error"})
@@ -44,9 +40,7 @@ const getBannerPages = async(req,res) => {
 
 const editBanner = async (req, res) => {
     try {
-        console.log("req.body",req.body)
       const { page, description, image } = req.body;
-      console.log(image,"image")
         const bannerId = req.body._id;
       const existingBanner = await Banner.findById(bannerId);
       if (!existingBanner) {
@@ -72,11 +66,8 @@ const editBanner = async (req, res) => {
 
   const deleteBanner = async (req,res) => {
     try {
-        console.log(req.body,"FFFf")
-        const bannerId = req.body._id;
-    console.log("bannerId",bannerId)
-
-    // Find the banner by ID and remove it from the database
+      
+    const bannerId = req.body._id;
     const deletedBanner = await Banner.findByIdAndDelete(bannerId);
 
     if (!deletedBanner) {

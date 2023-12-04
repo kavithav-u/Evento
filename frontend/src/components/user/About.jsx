@@ -15,10 +15,8 @@ useEffect(() => {
 const fetchAbout = async() => {
   try {
     const res = await getAboutData().unwrap();
-    console.log(res,'LASDA')
     const myBanner = res.Banners;
     const myAbout = res.abouts;
-    console.log(myAbout,"ASDFGHJ")
     setBanner(myBanner);
     setAboutData(myAbout);
   } catch (err) {
@@ -32,7 +30,7 @@ const fetchAbout = async() => {
     <img
       src={banner.image}
       alt="Banner Image"
-      className="object-cover h-96 w-full"
+      className="object-cover h-96 w-full mt-2"
     />
     {/* <div className="absolute inset-0 bg-gradient-to-t from-transparent via-black to-transparent opacity-70"></div> */}
     <div className="absolute inset-0 flex items-center justify-center text-white text-center">

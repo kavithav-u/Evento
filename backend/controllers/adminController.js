@@ -7,7 +7,6 @@ import { generateAdminToken } from '../utils/generateToken.js';
 const adminLogin = asyncHandler(async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(email, "EMAIL");
 
     if (
       email === process.env.AdminEmail &&
@@ -27,7 +26,6 @@ const adminLogin = asyncHandler(async (req, res) => {
 const getUserList = async (req, res) => {
   try {
     const users = await User.find();
-    console.log(users, "ERSD");
     res.status(200).json({ users });
   } catch (error) {
     res.status(500).json({ message: "server issue" });
@@ -36,7 +34,6 @@ const getUserList = async (req, res) => {
 
 const adminAction = async (req, res) =>{
   const userId = req.body.userId;
-  console.log(userId,"SEF")
   try {
   const user = await User.findById(userId);
   if (user) {

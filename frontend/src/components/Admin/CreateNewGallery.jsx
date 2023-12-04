@@ -1,21 +1,19 @@
-import React, { useState } from 'react'
-import { useCreateBannerMutation, useFetchBannerMutation } from '../../Slices/adminApiSlice';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import {Link, useNavigate } from 'react-router-dom';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import { useCreateGalleryMutation } from '../../Slices/adminApiSlice';
 
-const CreateNewBanner = () => {
-
+const CreateNewGallery = () => {
     const [imageURL, setImageURL] = useState([]);
-    const[page,setPage] = useState('');
     const [description, setDescription] = useState('');
-    const [CreateNewBanner] = useCreateBannerMutation();
+    const [useCreateGallery] = useCreateGalleryMutation();
 
     const navigate = useNavigate();
 
-    const handleImageUpload = async(e) => {
-        const files = Array.from(e.target.files);
-        const imageUrls = [];
-        for (const file of files){
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if(file) {
             try {
                 const formData = new FormData();
                 formData.append('file', file);
@@ -25,51 +23,51 @@ const CreateNewBanner = () => {
                   method: 'POST',
                   body: formData,
                 });
+                console.log(formData,"FromData")
                 const data = await response.json();
-                imageUrls.push(data.secure_url);
+                console.log(data,"DATA")
+                setImageURL(data.secure_url);
                 toast.success('Image uploaded successfully to Cloudinary');
             } catch (err) {
                 toast.error('Error uploading image to Cloudinary');
             }
-            setImageURL([...imageURL, ...imageUrls]);
         }
     }
 
-    const submitHandler = async(e) => {
+
+    const submitHandler = async (e) => {
         e.preventDefault();
         try {
-            const banner = {
+            const gallery = {
                 description,
-                page,
-                image:imageURL
-            };
-            const res = await CreateNewBanner(banner).unwrap();
-            console.log(res,"RESS")
+                image:imageURL,
+                
+            }
+            console.log(gallery,"GGGGGGGG")
+            const res = await useCreateGallery(gallery).unwrap();
+            console.log(res,"RESS");
             if(res.success) {
-                toast.success("New Banner Added");
-                navigate('/admin/banner');
-            } else {
+                toast.success("New image Added");
+                navigate('/admin/gallery');
+            }  else {
                 toast.error(res.message ||"An Error Occures")
             }
         } catch (err) {
             toast.error(err?.data?.message || err.error)
         }
     }
+
   return (
 <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">
         Create New Banner
       </h1>
-      <form className="flex flex-col gap-4" onSubmit={submitHandler}>
-        <input
-          type="text"
-          placeholder="Page"
-          value={page}
-          onChange={(e) => setPage(e.target.value)}
-          className="border p-3 rounded-lg"
-        />
+      <form className="flex flex-col gap-4" 
+      onSubmit={submitHandler}
+      >
+      
         <textarea
-          placeholder="Banner Description"
+          placeholder=" Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className="border p-3 rounded-lg"
@@ -83,18 +81,14 @@ const CreateNewBanner = () => {
           multiple
         />
 
-{imageURL.length>0 && (
- <div>
- {imageURL.map((url, index) => (
-     <img
-         key={index}
-         src={url}
-         alt={`Uploaded Image ${index}`}
-         style={{ maxWidth: '50px' }}
-     />
- ))}
-</div>
+{imageURL && (
+          <img
+            src={imageURL}
+            alt='Selected Image'
+            style={{ maxWidth: '50px' }}
+          />
         )}
+           
 
         <button className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
           Create
@@ -102,11 +96,10 @@ const CreateNewBanner = () => {
       </form>
       <div className="flex gap-2 mt-5">
         <p>
-          Return to the <Link to="/admin/banner">Back</Link>
+          Return to the <Link to="/admin/gallery">Back</Link>
         </p>
       </div>
-    </div>
-  )
+    </div>  )
 }
 
-export default CreateNewBanner
+export default CreateNewGallery
