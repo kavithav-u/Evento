@@ -1,20 +1,23 @@
-import React, { useEffect } from 'react';
-import { useState } from 'react';
-import { useTable } from 'react-table';
-import { useAdminGetUserMutation, useAdminActionUserMutation } from '../../Slices/adminApiSlice';
-import { toast } from 'react-toastify';
-
+import React, { useEffect, useState } from "react";
+import {
+  useAdminGetUserMutation,
+  useAdminActionUserMutation,
+} from "../../Slices/adminApiSlice";
+import { toast } from "react-toastify";
+import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 
 function AdminUserList() {
   const [userData, setUserData] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(7);
   const [getUserData] = useAdminGetUserMutation();
   const [userAction] = useAdminActionUserMutation();
 
   useEffect(() => {
     submitHandler();
-  }, []);
+  }, [currentPage]);
 
-  const submitHandler = async (e) => {
+  const submitHandler = async () => {
     try {
       const res = await getUserData().unwrap();
       const myData = res.users;
@@ -39,10 +42,24 @@ function AdminUserList() {
     }
   };
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = userData.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(userData.length / itemsPerPage);
+
+  const paginate = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
   return (
     <div className="overflow-x-auto">
       <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <strong className="text-gray-700 font-medium block sm:inline">User List</strong>
+        <strong className="text-gray-700 font-medium block sm:inline">
+          User List
+        </strong>
         <div className="overflow-x-auto">
           <table className="w-full text-gray-700 table-auto">
             <thead>
@@ -55,8 +72,8 @@ function AdminUserList() {
               </tr>
             </thead>
             <tbody className="space-y-2">
-              {userData && userData.length > 0 ? (
-                userData.map((user) => (
+              {currentItems && currentItems.length > 0 ? (
+                currentItems.map((user) => (
                   <tr key={user?._id}>
                     <td className="py-2">{user?._id}</td>
                     <td className="py-2">{user?.name}</td>
@@ -102,6 +119,38 @@ function AdminUserList() {
           </table>
         </div>
       </div>
+      {/* Pagination controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-end mt-8">
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="mx-2 px-4 py-2 bg-slate-200 text-black rounded-md"
+          >
+            <BsChevronLeft />
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              onClick={() => paginate(i + 1)}
+              className={`mx-2 px-4 py-2 ${
+                currentPage === i + 1
+                  ? "bg-slate-200 text-black"
+                  : "bg-white text-gray-700"
+              } rounded-md`}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="mx-2 px-4 py-2bg-slate-200 text-black rounded-md"
+          >
+            <BsChevronRight />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

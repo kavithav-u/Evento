@@ -1,4 +1,4 @@
-import React from 'react'
+
 import CreateNewAbout from '../../components/Admin/CreateNewAbout';
 import Sidebar from '../../components/Admin/Sidebar'
 import AdminHeader from '../../components/Admin/AdminHeader';

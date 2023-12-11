@@ -2,55 +2,94 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useLogoutMutation } from '../../Slices/usersApiSlice';
+import { useElasticSearchMutation, useLogoutMutation } from '../../Slices/usersApiSlice';
 import { logout } from '../../Slices/authSlice';
 import { FaSearch } from 'react-icons/fa';
-import { CiSearch } from "react-icons/ci";
+import { toast } from 'react-toastify';
+import { selectSelectedHallId, setSelectedHallId } from '../../Slices/searchSlice';
+
 
 const UserHeader = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [input, setInput] = useState('')
+  const [hallResults, setHallResults] = useState([]);
+  const [selectedHall, setSelectedHall] = useState(null);
   const [logoutApiCall] = useLogoutMutation();
-  const [searchTerm,setSearchTerm] = useState('');
+  const [elasticSearchAPI] = useElasticSearchMutation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const selectedHallIdFromStore = useSelector(selectSelectedHallId);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // const _id = userInfo._id;
-  // console.log("_id,",_id)
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const searchTermFromUrl = urlParams.get('searchTerm');
-    if (searchTermFromUrl) {
-      setSearchTerm(searchTermFromUrl);
-    }
-  }, [location.search]);
+    fetchData ()
+  },[]);
 
   const logoutHandler = async () => {
     try {
       await logoutApiCall().unwrap();
       dispatch(logout());
       navigate('/');
-    } catch (err) {
+    }catch (err) {
       toast.error(err?.data?.message || err.error);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const urlParams = new URLSearchParams(window.location.search);
-    console.log("urlParams",urlParams)
-    urlParams.set('searchTerm', searchTerm);
-    const searchQuery = urlParams.toString();
-    navigate(`/search?${searchQuery}`);
+    if (hallResults.length > 0) {
+      const selectedHall = hallResults[0]; 
+      setSelectedHall(selectedHall);
+    }
   };
 
   const bannerStyle = {
-    top: isDropdownOpen ? '50px' : '0', // Adjust the top position when the dropdown is open
+    top: isDropdownOpen ? '50px' : '0',
   };
+
+  const fetchData = async (value) => {
+    try {
+      
+    const res = await elasticSearchAPI({input:value}).unwrap();
+    setHallResults(res.halls)
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+};
+
+const suggestionClickHandler = (hallId) => {
+  const hallName = hallId.hallName;
+  
+  dispatch(setSelectedHallId(hallId._id));
+
+  setInput(hallName);
+
+  setHallResults([]);
+
+  console.log('Selected Hall ID:', hallId);
+};
+
+  
+
+  const handleChange = (value) => {
+    setInput(value);
+
+    if (value.trim() !== '') {
+      const filteredHalls = hallResults.filter((hall) =>
+        hall.hallName.toLowerCase().includes(value.toLowerCase())
+      );
+      setHallResults(filteredHalls);
+    } else {
+      setHallResults([]);
+      
+    }
+  };
+  console.log(hallResults,"after emptying")
+
 
   return (
     <header className="bg-slate-200 shadow-md relative z-10">
@@ -67,16 +106,33 @@ const UserHeader = () => {
         >
           <input
             type='text'
+            value = {input}
+            onChange={(e) => handleChange(e.target.value)}
             placeholder='Search...'
             className='bg-transparent focus:outline-none w-24 sm:w-64'
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button>
 
             <FaSearch className='text-slate-600' />
- 
           </button>
+{input.trim() !== '' && hallResults.length > 0 && (
+  <div className="absolute mt-52 bg-white border rounded-lg border-gray-300 w-60 max-h-44 overflow-y-auto z-10">
+    <ul>
+{hallResults.map((hall) => (
+  <li key={hall.id} className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+    onClick={() => {
+      suggestionClickHandler(hall, hall.id);
+      setHallResults([]);
+    }}
+  >
+    {hall.hallName}
+  </li>
+))}
+
+    </ul>
+  </div>
+)}
+
         </form>
         <ul className="flex gap-3">
           <Link to="/" className="no-underline text-slate-700 hover:underline">
@@ -135,7 +191,6 @@ const UserHeader = () => {
         </ul>
       </div>
       <div className="relative" style={bannerStyle}>
-        {/* Your banner image code goes here */}
       </div>
     </header>
   );

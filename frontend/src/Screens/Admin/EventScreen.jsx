@@ -1,4 +1,3 @@
-import React from 'react';
 import EventList from '../../components/Admin/EventList';
 import Sidebar from '../../components/Admin/Sidebar';
 import AdminHeader from '../../components/Admin/AdminHeader';

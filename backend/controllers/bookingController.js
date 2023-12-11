@@ -1,12 +1,15 @@
 
 import Booking from '../models/bookingsSchema.js'
-import User from '../models/userModels.js'
-import Event from "../models/eventModels.js";
 
+import crypto from 'crypto';
+
+function generateUuid(length) {
+   console.log("ASdadsd")
+  return crypto.randomBytes(length).toString('hex');
+}
 
 const getBookings = async(req,res) => {
     try {
-      console.log("asdfghfdsa")
       const userId = req.params.userId;
       const bookings = await Booking.find({ user: userId })
       .populate({path:'user'})
@@ -17,6 +20,7 @@ populate:{
   select:'eventType'
 }})
   .exec();
+
   console.log(bookings,"bookings")
     res.status(200).json({ bookings });
     } catch (error) {
@@ -26,7 +30,14 @@ populate:{
 
 const getAllBookings = async(req,res) => {
   try {
-    console.log("ggggggggggggggggggggggggggggggg")
+    const bookingsWithoutOrderId = await Booking.find({ orderId: { $exists: false } });
+
+    // Generate and assign orderId for each booking without orderId
+    for (const booking of bookingsWithoutOrderId) {
+      const orderId = generateUuid(16);
+      await Booking.findByIdAndUpdate(booking._id, { orderId });
+    }
+
     const bookings = await Booking.find().populate({path:'user',})
     .populate({path:'hall',
 populate:{
@@ -45,8 +56,9 @@ populate:{
 const newBookings = async(req,res) => {
     try {
         const { hall, totalAmount, startDate, endDate, totalDays, user } = req.body;
-
+        const orderId = generateUuid(16);
         const newBooking = await Booking.create({
+          orderId,
           hall,
           totalAmount,
           startDate,
@@ -75,7 +87,7 @@ const cancelBookings = async(req,res)=> {
       console.log("efrefef")
       bookings.status = "canceled";
     }
-    const updateBooking = await Booking.save();
+    const updateBooking = await bookings.save();
     console.log("updateBooking",updateBooking);
     res.status(200).json({success:true, message:'booking Canceled'})
   } catch(error) {
@@ -86,11 +98,11 @@ const cancelBookings = async(req,res)=> {
 
 const adminActionBookings = async(req,res) => {
   try {
-    console.log(req.body)
+    console.log(req.body,"res.body")
     const bookingId = req.body.bookingId;
     console.log(bookingId,"bbookingId");
-    const { action } = req.body;
-    console.log("action".action)
+    const  action = req.body.action;
+    console.log("action",action)
 
     const booking = await Booking.findById(bookingId);
     console.log("booking",booking);
@@ -101,12 +113,17 @@ const adminActionBookings = async(req,res) => {
 
     if(booking.status=== 'pending') {
       booking.status = 'confirmed';
-    } else if(booking.status=== 'confirmed') {
-      booking.status = 'canceled'
-    } 
+    }  else if (booking.status === 'confirmed' && action === 'cancel') {
+      booking.status = 'canceled';
+    } else {
+      console.log("dfasdfasfdasf")
+      // Handle other cases where status cannot be changed
+      return res.status(404).json({ success: true, error: 'Invalid action for the current status' });
+    }
+
     const statusUpdate = await booking.save();
     console.log("statusUpdate",statusUpdate)
-    return res.json({ success: true, booking });
+    return res.json({ success: true, statusUpdate });
   }  catch(error) {
     console.error(error);
     res.status(500).json({message:"internal server error"})

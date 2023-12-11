@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import Sidebar from '../../components/Admin/Sidebar'
 import AdminHeader from '../../components/Admin/AdminHeader'
 import BookingsLists from '../../components/Admin/BookingsLists'

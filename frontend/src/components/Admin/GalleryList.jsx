@@ -1,19 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { FaEdit, FaTrash } from 'react-icons/fa';
-import { useDeleteGalleryMutation, useFetchGalleryMutation, useUpdateGalleryMutation } from '../../Slices/adminApiSlice';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import {
+  useDeleteGalleryMutation,
+  useFetchGalleryMutation,
+  useUpdateGalleryMutation,
+} from "../../Slices/adminApiSlice";
 
 const GalleryList = () => {
   const [galleryData, setGalleryData] = useState([]);
   const [selectedGallery, setSelectedGallery] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editedDescription, setEditedDescription] = useState('');
-  const [editedImage, setEditedImage] = useState('');
+  const [editedDescription, setEditedDescription] = useState("");
+  const [editedImage, setEditedImage] = useState("");
   const [getGalleryData] = useFetchGalleryMutation();
   const [updateGalleryData] = useUpdateGalleryMutation();
   const [deleteGallery] = useDeleteGalleryMutation();
-
 
   useEffect(() => {
     fetchGallery();
@@ -21,27 +24,28 @@ const GalleryList = () => {
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
-    console.log(file,"ASZDVXCS")
-    if(file) {
-        try {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', 'up0dzyua');
-            formData.append('cloud_name', 'dszrxbtng');
-            const response = await fetch('https://api.cloudinary.com/v1_1/dszrxbtng/image/upload', {
-              method: 'POST',
-              body: formData,
-            });
-            const data = await response.json();
-            setEditedImage(data.secure_url);
-            toast.success('Image uploaded successfully to Cloudinary');
-        } catch (err) {
-            toast.error('Error uploading image to Cloudinary');
-        }
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "up0dzyua");
+        formData.append("cloud_name", "dszrxbtng");
+        const response = await fetch(
+          "https://api.cloudinary.com/v1_1/dszrxbtng/image/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        const data = await response.json();
+        setEditedImage(data.secure_url);
+        toast.success("Image uploaded successfully to Cloudinary");
+      } catch (err) {
+        toast.error("Error uploading image to Cloudinary");
+      }
     }
   };
 
-  
   const fetchGallery = async () => {
     try {
       const res = await getGalleryData().unwrap();
@@ -53,57 +57,51 @@ const GalleryList = () => {
   };
   const handleEdit = (gallery) => {
     setSelectedGallery(gallery);
-    setEditedDescription(gallery.description || '');
-    setEditedImage(gallery.image || '')
+    setEditedDescription(gallery.description || "");
+    setEditedImage(gallery.image || "");
     setIsModalOpen(true);
   };
 
-  const handleDelete = async(galleryId) => {
-    try{
-     console.log(galleryId,"FFFF")
-     const res = await deleteGallery(galleryId).unwrap();
-         toast.success(res.message || 'Gallery deleted successfully');
-         await fetchGallery();
-   } catch (err) {
-     toast.error(err?.data?.message || err.error);
-   }
-     };
+  const handleDelete = async (galleryId) => {
+    try {
+      const res = await deleteGallery(galleryId).unwrap();
+      toast.success(res.message || "Gallery deleted successfully");
+      await fetchGallery();
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
 
-     const handleSaveGallery = async (editedGallery) => {
-      const updatedGallery = {
-        _id: selectedGallery._id,
-        description: editedDescription,
-        image: editedImage,
-      };
-      console.log('Save Gallery:', updatedGallery);
-      try {
-      // Implement the logic to save the edited Gallery
-     
+  const handleSaveGallery = async () => {
+    const updatedGallery = {
+      _id: selectedGallery._id,
+      description: editedDescription,
+      image: editedImage,
+    };
+    try {
       const res = await updateGalleryData(updatedGallery).unwrap();
-      console.log(res,"GGGG")
+      console.log(res);
       setIsModalOpen(false);
       await fetchGallery();
-      } catch (err) {
-        toast.error(err?.data?.message || err.error);
-      }
-    };
-  
-    const closeModal = () => {
-      setIsModalOpen(false);
-      setSelectedBanner(null);
-    };
-  
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
-<div>
+    <div>
       <div>
         <Link
-          to="/admin/gallery/new"
-          className="bg-blue-500 text-white px-4 py-2 rounded-md"
+          to="/admin/about/new"
+          className="bg-emerald-700 text-white px-4 py-2 mb-6 rounded-md"
         >
           Add New
         </Link>
-        <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
+        <div className="bg-white px-4 pt-3 pb-4 mt-3 rounded-sm border border-gray-200 flex-1">
           <strong className="text-gray-700 font-medium">Gallery List</strong>
           <div className="border-x border-gray-200 rounded-sm mt-3">
             <table className="w-full text-gray-700">
@@ -168,9 +166,7 @@ const GalleryList = () => {
           className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center"
         >
           <div className="bg-gray-800 w-full max-w-md p-4 rounded-lg">
-            {/* Modal content */}
             <div className="relative">
-              {/* Modal header */}
               <div className="flex items-center justify-between pb-4 border-b">
                 <h3 className="text-lg font-semibold text-white">
                   Edit Gallery
@@ -197,7 +193,7 @@ const GalleryList = () => {
                   <span className="sr-only">Close modal</span>
                 </button>
               </div>
-              {/* Modal body */}
+
               <form>
                 <label
                   htmlFor="description"
@@ -250,10 +246,8 @@ const GalleryList = () => {
           </div>
         </div>
       )}
+    </div>
+  );
+};
 
-
-    </div> 
-     )
-}
-
-export default GalleryList
+export default GalleryList;

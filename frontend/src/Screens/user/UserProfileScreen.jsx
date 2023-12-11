@@ -1,34 +1,28 @@
-
-import React,{ useState, useEffect, useRef } from "react";
+import React from 'react';
+import { useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector  } from "react-redux";
 import {toast} from 'react-toastify';
 import { setCredentials } from "../../Slices/authSlice";
-import { MdModeEditOutline } from "react-icons/md";
 import { useUpdateProfileMutation, useFetchProfileMutation, useUpdatePasswordMutation } from '../../Slices/usersApiSlice';
 import { logout } from '../../Slices/authSlice';
-import { useLogoutMutation } from '../../Slices/usersApiSlice';
-import Axios from 'axios';
+
 import UserHeader from '../../components/user/userHeader';
 
 const UserProfileScreen = () => {
     const [image,setImage]=useState()
     const [name,setName] = useState('');
-    const [number,setNumber] = useState('');
+    const [number,setNumber] = useState();
     const [email,setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [ imageSelected, setImageSelected ] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-    const fileInputRef = useRef(null);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const {userInfo} = useSelector((state) => state.auth);
-    const [updateProfile, {isLoading}] = useUpdateProfileMutation();
+    const [updateProfile, ] = useUpdateProfileMutation();
     const [passwordUpdate] = useUpdatePasswordMutation();
-    const [logoutApiCall] = useLogoutMutation();
     const [fetchProfile] = useFetchProfileMutation();
 
     useEffect (() => {
@@ -39,6 +33,8 @@ const UserProfileScreen = () => {
       try {
         const res = await fetchProfile().unwrap();
         console.log("res.",res)
+        const number = res.number;
+        setNumber(number)
         if(res.notActive) {
           dispatch(logout());
           toast.warning('User is blocked. Please log in again.');
@@ -48,8 +44,8 @@ const UserProfileScreen = () => {
         toast.error(err?.data?.message || err.error);
       }
     }
-
-    const handleUserBookings = async(e) => {
+console.log(number,"number")
+    const handleUserBookings = async() => {
       try {
         navigate('/bookings')
       } catch (err) {
@@ -57,13 +53,13 @@ const UserProfileScreen = () => {
       }
       }
 
-    useEffect(() => {
-        setName(userInfo.name),
-        setEmail (userInfo.email),
-        setNumber(userInfo.number),
-        setImage(userInfo.image)
-      },[userInfo.setEmail, userInfo.setName, userInfo.setImage, userInfo.image]);
-
+      useEffect(() => {
+        setName(userInfo.name);
+        setEmail(userInfo.email);
+        setNumber(userInfo.number);
+        setImage(userInfo.image);
+      }, [userInfo.name, userInfo.email, userInfo.number, userInfo.image, setName, setEmail, setNumber, setImage]);
+      
       const submitHandler = async(e) => {
         e.preventDefault();
             try {
@@ -130,7 +126,7 @@ const UserProfileScreen = () => {
           
       }).unwrap();
       console.log(res,"RESD")
-    } catch (error) {
+    } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
 
@@ -181,7 +177,7 @@ const UserProfileScreen = () => {
   
           <div className="mb-3">
             <h4 className="text-xl font-semibold">Phone Number</h4>
-            <p>{userInfo?.number || 0}</p>
+            <p>{number || 0}</p>
           </div>
   
           <div className="flex space-x-3">

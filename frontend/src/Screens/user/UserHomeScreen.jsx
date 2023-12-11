@@ -2,40 +2,52 @@ import React, { useEffect, useState } from 'react';
 import UserHeader from '../../components/user/userHeader.jsx';
 import Footer from '../../components/user/Footer.jsx';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css'; // Corrected import
-
+import 'swiper/css'; 
+import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { useFetchHomeMutation } from '../../Slices/usersApiSlice.js';
 import { EventCard } from '../../components/user/Banner.jsx';
+import Chats from '../SupportEngine/Chat.jsx';
+// import SupportChat from '../SupportEngine/SupportChat.jsx';
+// import Avatar from '../SupportEngine/Avatar.jsx';
 
 const UserHomeScreen = () => {
   const [banner, setBanner] = useState([]);
   const [recentBookings, setRecentBookings] = useState([]);
   const [fetchHome] = useFetchHomeMutation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
-  }, []);
+  },[]);
 
   const fetchData = async () => {
     try {
       const res = await fetchHome().unwrap();
-      console.log('?SDASDAS', res);
       const banner = res.Banners;
       setBanner(banner);
       const services = res.services;
+      console.log(services,"sdfasdf", res,"RESSSS")
       setRecentBookings(services);
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
   };
 
-  console.log(banner, 'nammere');
+  console.log(recentBookings,"recentBookings")
+
+  const handleCardClick = async (eventId) => {
+    console.log(eventId,":eventId")
+    // window.scrollTo(0, 0);
+    navigate(`/listing/${eventId}`);
+
+  }
 
   return (
     <div>
       <UserHeader />
-
+      <Chats />
+      {/* <Avatar /> */}
       <div className="swiper-container" style={{ height: '80vh' }}>
         <Swiper
           spaceBetween={10}
@@ -128,8 +140,12 @@ const UserHomeScreen = () => {
       <div className="elementor-section flex items-center justify-center p-5">
         {/* Other content here */}
         <div className="flex flex-wrap justify-center">
-          {recentBookings.map((event) => (
-            <EventCard key={event._id} event={event} />
+        {recentBookings.map((event) => (
+            <EventCard 
+              key={event._id} 
+              event={event} 
+              onClick={() => handleCardClick(event._id)}
+            />
           ))}
         </div>
       </div>

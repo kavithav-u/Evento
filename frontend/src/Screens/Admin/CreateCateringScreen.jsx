@@ -1,4 +1,3 @@
-import React from 'react'
 import CreateNewCatering from '../../components/Admin/CreateNewCatering';
 import Sidebar from '../../components/Admin/Sidebar';
 import AdminHeader from '../../components/Admin/AdminHeader';

@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter,
-createRoutesFromElements,
-Route,
 RouterProvider } from 'react-router-dom';
 import store from './Store.js';
 import App from './App.jsx'
@@ -16,7 +14,6 @@ import UserProfileScreen from './Screens/user/UserProfileScreen.jsx';
 import PrivateRoute from './components/user/PrivateRoute.jsx';
 import AdminLogin from './Screens/Admin/AdminLogin.jsx';
 import UsersList from './Screens/Admin/UsersList.jsx';
-import Layout from './components/Admin/Layout.jsx';
 import AdminPrivateRoute from './components/Admin/AdminPrivateRoute.jsx';
 import Services from './Screens/user/Services.jsx';
 import EventScreen from './Screens/Admin/EventScreen.jsx';
@@ -39,6 +36,7 @@ import CreateGallery from './Screens/Admin/CreateNewGallery.jsx';
 import Gallery from './Screens/user/Gallery.jsx';
 import SearchListing from './Screens/user/SearchListing.jsx';
 import AdminBookingScreen from './Screens/Admin/AdminBookingScreen.jsx';
+import DashboardScreen from './Screens/Admin/DashboardScreen.jsx';
 
 const router = createBrowserRouter([
   {
@@ -115,6 +113,7 @@ const router = createBrowserRouter([
     path:"/admin", 
     element: <App />,
    
+    // eslint-disable-next-line no-sparse-arrays
     children:[
       {
     path:"",
@@ -126,7 +125,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Layout />,
+        element: <DashboardScreen />,
       },
     ],
   },,
@@ -147,7 +146,7 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <EventScreen />,
-      },
+      }
     ],
   },,
   {

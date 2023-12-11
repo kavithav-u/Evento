@@ -11,6 +11,13 @@ export const adminApiSlice = apiSlice.injectEndpoints({
         credentials: 'include',
       }),           
     }),
+    adminDashboard: builder.mutation({
+      query: () => ({
+        url: `${ADMIN_URL}/dashboard`,
+        method: 'GET',
+        credentials: 'include',
+      }),
+    }),
     adminGetUser: builder.mutation({
       query: () => ({
         url: `${ADMIN_URL}/userlist`,
@@ -247,6 +254,7 @@ export const adminApiSlice = apiSlice.injectEndpoints({
 
 export const {  useAdminloginMutation, 
 useAdminlogoutMutation, 
+useAdminDashboardMutation,
 useAdminGetUserMutation, 
 useAdminActionUserMutation,
 useCreateEventMutation,

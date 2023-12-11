@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import { adminLogin, adminLogout, getUserList, adminAction } from "../controllers/adminController.js";
+import { adminLogin, adminLogout, getUserList, adminAction, getDashboard } from "../controllers/adminController.js";
 import { adminAuthProtect } from "../middleware/adminauthMiddleware.js";
 import { adminActionEvent, editEvent, getAllEvent, getAllEvents, newEvent } from "../controllers/eventController.js";
 import { adminActionHall, editHall, getAllHalls, getHallDetails, newHall } from "../controllers/hallController.js";
@@ -12,6 +12,7 @@ import { adminActionBookings, getAllBookings } from "../controllers/bookingContr
 
 router.post('/',adminLogin);
 router.post('/logout', adminLogout);
+router.get('/dashboard',adminAuthProtect,getDashboard)
 router.route('/userlist').get(getUserList).put(adminAction);
 router.get('/events', getAllEvent);
 router.put('/events',adminAuthProtect,adminActionEvent);

@@ -1,27 +1,31 @@
-import  asyncHandler from 'express-async-handler';
-import User from '../models/userModels.js';
-import dotenv from 'dotenv';
+import asyncHandler from "express-async-handler";
+import User from "../models/userModels.js";
+import dotenv from "dotenv";
 dotenv.config();
-import { generateAdminToken } from '../utils/generateToken.js';
+import { generateAdminToken } from "../utils/generateToken.js";
+import Booking from "../models/bookingsSchema.js";
 
 const adminLogin = asyncHandler(async (req, res) => {
   try {
     const { email, password } = req.body;
-
+console.log("req.body", req.body)
     if (
       email === process.env.AdminEmail &&
       password === process.env.AdminPassword
     ) {
+      console.log("admin login")
+
       generateAdminToken(res, email);
       res.status(200).json({ success: true, email, message: "login sucesss" });
     } else {
+      console.log("sdfsdfs")
       res.json({ message: "Invalid email or password" });
     }
   } catch (error) {
+    console.log("gggg")
     res.json({ message: "server Issue" });
   }
 });
-
 
 const getUserList = async (req, res) => {
   try {
@@ -32,29 +36,31 @@ const getUserList = async (req, res) => {
   }
 };
 
-const adminAction = async (req, res) =>{
+const adminAction = async (req, res) => {
   const userId = req.body.userId;
   try {
-  const user = await User.findById(userId);
-  if (user) {
-    const updatedActiveStatus = !user.isActive;
-    user.isActive = updatedActiveStatus;
-    await user.save();
+    const user = await User.findById(userId);
+    if (user) {
+      const updatedActiveStatus = !user.isActive;
+      user.isActive = updatedActiveStatus;
+      await user.save();
 
-    const statusMessage = user.isActive?'activated' : 'blocked'
-  res.status(200).json({success: true, message:"User ${statusMessage} Successfully",isActive:updatedActiveStatus})
-  } else {
-    res.status(404).json({ message: "User not found" });
+      const statusMessage = user.isActive ? "activated" : "blocked";
+      res
+        .status(200)
+        .json({
+          success: true,
+          message: "User ${statusMessage} Successfully",
+          isActive: updatedActiveStatus,
+        });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
-} catch (error) {
-  console.error("Error updating user:", error);
-  res.status(500).json({ success: false, message: "Server error" });
-}
 };
-
-
-
-
 
 const adminLogout = (req, res) => {
   res.cookie("jwt", "", {
@@ -63,12 +69,50 @@ const adminLogout = (req, res) => {
   });
   res.status(200).json({ message: "User Logged out successfully" });
 };
-  
 
 
-  export {
-    adminLogout,
-    adminLogin,
-    getUserList,
-    adminAction
+const getDashboard =  async (req,res ) => {
+  try {
+    const monthlySales = await Booking.aggregate([
+      {
+        $match: {
+          status: 'confirmed',
+        },
+      },
+      {
+        $group: {
+          _id: {
+            month: { $month: '$createdAt' },
+            year: { $year: '$createdAt' },
+          },
+          totalSales: { $sum: { $toDouble: "$totalAmount" } },
+        },
+      },
+      {
+        $sort: { '_id.year': 1, '_id.month': 1 },
+      },
+    ]);
+    console.log(monthlySales,"monthlSales")
+    const TotalSales = await Booking.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalSales: { $sum: { $toDouble: "$totalAmount" } },
+        },
+      },
+    ]);
+    const booking = await Booking.find().count();
+    const TotalUsers = await User.find().count();
+    res.status(200).json({ success:true, message:"success",TotalSales, monthlySales, booking,TotalUsers });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
+}
+
+export 
+{ adminLogout, 
+  adminLogin, 
+  getUserList, 
+  adminAction,
+  getDashboard };

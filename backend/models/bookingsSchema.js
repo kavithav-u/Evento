@@ -7,6 +7,9 @@ const bookingSchema = new mongoose.Schema({
     ref:'Hall', 
     required: true,
   },
+  orderId : {
+
+  },
   user: {
     type: schema.Types.ObjectId,
     ref: 'User',

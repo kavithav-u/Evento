@@ -52,66 +52,23 @@ const getAboutData = async(req,res) => {
     }
 };
 
-// const getSearchListingsssss = async (req,res,next) => {
-//     try{
-//         const limit = parseInt(req.query.limit) || 9;
-//         const startIndex = parseInt(req.query.startIndex) || 0;
-//         // let offer = req.query.offer;
-    
-//         // if (offer === undefined || offer === 'false') {
-//         //   offer = { $in: [false, true] };
-//         // }
-    
-//         let location = req.query.location;
-//         console.log(location,"fffff")
-    
-//         if (location === undefined || location === 'false') {
-//             location = { $in: [false, true] };
-//         }
-    
-//         let capacity = req.query.capacity;
-    
-//         if (capacity === undefined || capacity === 'false') {
-//             capacity = { $in: [false, true] };
-//         }
-    
-//         // let type = req.query.type;
-    
-//         // if (type === undefined || type === 'all') {
-//         //   type = { $in: ['sale', 'rent'] };
-//         // }
-    
-//         const searchTerm = req.query.searchTerm || '';
-    
-//         const sort = req.query.sort || 'createdAt';
-    
-//         const order = req.query.order || 'desc';
-    
-//         const listings = await Hall.find({
-//           name: { $regex: searchTerm, $options: 'i' },
-//           capacity,
-//           location,
-
-//         })
-//           .sort({ [sort]: order })
-//           .limit(limit)
-//           .skip(startIndex);
-//     console.log(listings,"GGGG")
-//         return res.status(200).json(listings);
-        
-//       } catch (error) {
-//         next(error);
-//       }
-//     };
-
+const elasticSearch = async (req,res) => {
+    try {
+        console.log("Sdfasdfasdfasddfasfaf")
+        console.log(req.body,"req.bodyssss")
+        const halls = await Hall. find();
+        console.log(halls,"halls")
+        res.status(200).json ({success:true, halls})
+    } catch (error) {
+        res.status(200).json({message:"Internal server error"});
+            }
+}
 
 
 const getSearchListing = async(req,res) =>{
     try {
-        console.log("fffffff");
         const events = await Event.find();
         const halls = await Hall.find()
-        console.log(halls,"halls");
 
         res.status(200).json({success:true,halls,events,message:"Success"})
     }  catch (error) {
@@ -119,18 +76,47 @@ const getSearchListing = async(req,res) =>{
             }
 };
 
-const filterSearch = async (req,res) => {
+
+
+const filterSearch = async (req, res) => {
     try {
-        console.log(req.body,"sdfasfasf");
-        const {event, eventId} = req.body;
-        const filterData = await Hall.find({ events: eventId });
-        console.log("filterData",filterData)
-        console.log(eventId,"eventId");
-        res.status(200).json({sucess:true, filterData, message:"success"})
-    }  catch (error) {
-        res.status(200).json({message:"Internal server error"});
-            }
-}
+      console.log(req.body, "sdfasfasf");
+      const { sortOrder, eventId, location } = req.body;
+  
+      let filterData;
+  
+      if (location === '' || location === 'All Locations') {
+        filterData = await Hall.find({ events: eventId });
+      } else {
+        console.log("entered else");
+        filterData = await Hall.find({ events: eventId, location: location });
+        console.log(filterData, "filterData before sort");
+      }
+
+      if (sortOrder === 'regularPrice_asc') {
+
+        filterData.sort((a, b) => a.pricePerDay - b.pricePerDay);
+      } else if (sortOrder === 'regularPrice_desc') {
+        console.log("dfasdfadf")
+        filterData.sort((a, b) => b.pricePerDay - a.pricePerDay);
+        console.log("completed Desc sort")
+      }
+
+      console.log(filterData,"filterData")
+  
+      if (res.success === 'false') {
+        res.status(200).json({ success: false, message: "No hall found" });
+        
+      } else {
+        res
+          .status(200)
+          .json({ success: true, filterData, message: "success" });
+      }
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Internal server error" });
+    }
+  };
+  
 
 export {
     fetchListing,
@@ -138,5 +124,6 @@ export {
     getCateringDetails,
     getAboutData,
     getSearchListing,
-    filterSearch
+    filterSearch,
+    elasticSearch,
 }

@@ -10,7 +10,7 @@ export default function Layout() {
 			<div className="flex flex-col flex-1">
 				<AdminHeader />
 				<div className="flex-1 p-4 min-h-0 overflow-auto">
-					
+					cdfsgtfhygjukhijlukyjgtfhgd
 				</div>
 			</div>
 		</div>

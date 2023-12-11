@@ -115,14 +115,14 @@ export const userApiSlice = apiSlice.injectEndpoints({
           credentials: 'include',
         }),
       }),
-      createBookings: builder.mutation({
-        query: (data) => ({
-          url: `${USERS_URL}/bookings`,
-          method: 'post',
-          body:data,
-          credentials: 'include',
-        }),
-      }),
+      // createBookings: builder.mutation({
+      //   query: (data) => ({
+      //     url: `${USERS_URL}/bookings`,
+      //     method: 'post',
+      //     body:data,
+      //     credentials: 'include',
+      //   }),
+      // }),
       cancelBookings: builder.mutation({
         query: (bookingId) => ({
           url: `${USERS_URL}/cancelBooking`,
@@ -153,6 +153,15 @@ export const userApiSlice = apiSlice.injectEndpoints({
           credentials: 'include',
         }),
       }),
+      elasticSearch: builder.mutation({
+        query: (data) => ({
+          url: `${USERS_URL}/elasticSearch`,
+          method: 'post',
+          body:data,
+          credentials: 'include',
+        }),
+      }),
+      
   }),
 });
 
@@ -175,4 +184,6 @@ export const { useLoginMutation,
       useFetchBookingsMutation,
     useFetchGalleryMutation,
   useFetchSearchMutation,
-useFilterSearchMutation} = userApiSlice;
+useFilterSearchMutation,
+useElasticSearchMutation,
+} = userApiSlice;

@@ -1,5 +1,4 @@
-import React from 'react';
-import Layout from '../../components/Admin/Layout';
+
 import AdminUserList from '../../components/Admin/AdminUserList';
 import Sidebar from '../../components/Admin/Sidebar';
 import AdminHeader from '../../components/Admin/AdminHeader';

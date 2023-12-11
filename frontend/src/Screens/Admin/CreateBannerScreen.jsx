@@ -1,4 +1,3 @@
-import React from 'react'
 import CreateNewBanner from '../../components/Admin/CreateNewBanner';
 import Sidebar from '../../components/Admin/Sidebar';
 import AdminHeader from '../../components/Admin/AdminHeader';

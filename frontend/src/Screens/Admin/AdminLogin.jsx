@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React,{ useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {setAdminCredentials} from '../../Slices/adminAuthSlice';
@@ -9,7 +9,7 @@ const AdminLogin = () => {
 
   const [email,setEmail] = useState('');
   const [ password, setPassword] = useState('');
-
+console.log(email, password)
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -30,7 +30,7 @@ const AdminLogin = () => {
     try{
   
       const res = await adminlogin({email, password}).unwrap()
-      console.log("res", res)
+      console.log("resddd", res)
       dispatch(setAdminCredentials({...res}))
       navigate('/admin/dashboard')
     } catch (err) {

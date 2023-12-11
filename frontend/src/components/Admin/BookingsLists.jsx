@@ -1,15 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import { useFetchUserBookingsMutation, useAdminActionBookingMutation } from '../../Slices/adminApiSlice';
-import Switch from 'react-switch';
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import {
+  useFetchUserBookingsMutation,
+  useAdminActionBookingMutation,
+} from "../../Slices/adminApiSlice";
+import Switch from "react-switch";
+import BookingModal from "./modal";
 
 const BookingsLists = () => {
   const [bookingData, setBookingData] = useState([]);
   const [checkedState, setCheckedState] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
   const [fetchBookingsApi] = useFetchUserBookingsMutation();
   const [fetchAdminAction] = useAdminActionBookingMutation();
 
   useEffect(() => {
+    const storedCheckedState =
+      JSON.parse(localStorage.getItem("checkedState")) || {};
+    setCheckedState(storedCheckedState);
+
     fetchBookings();
   }, []);
 
@@ -17,6 +27,14 @@ const BookingsLists = () => {
     try {
       const res = await fetchBookingsApi().unwrap();
       const Booking = res.bookings;
+
+      const initialCheckedState = Booking.reduce((acc, booking) => {
+        acc[booking?._id] = booking.status === "confirmed";
+        return acc;
+      }, {});
+
+      setCheckedState(initialCheckedState);
+
       setBookingData(Booking);
     } catch (err) {
       toast.error(err?.data?.message || err.error);
@@ -25,28 +43,45 @@ const BookingsLists = () => {
 
   const handleChange = async (isChecked, bookingId) => {
     try {
-      console.log("Booking ID:", bookingId);
-  
-      const response = await fetchAdminAction({ bookingId }).unwrap();
-      console.log(response, "response");
-  
-      const updatedBooking = response.booking;
-      console.log("Updated Booking:", updatedBooking);
-  
-      // // Update the state based on the updated status
-      // setCheckedState((prevState) => ({
-      //   ...prevState,
-      //   [bookingId]: updatedBooking.status === 'confirmed',
-      // }));
-  
+      setCheckedState((prevState) => ({
+        ...prevState,
+        [bookingId]: isChecked,
+      }));
+
+      const response = await fetchAdminAction({
+        bookingId,
+        action: isChecked ? "confirm" : "cancel",
+      }).unwrap();
+
+      if (!response.success) {
+        toast.error(response.error || "An error occurred");
+        setCheckedState((prevState) => ({
+          ...prevState,
+          [bookingId]: !isChecked,
+        }));
+        return;
+      }
+
+      const updatedBooking = response.statusUpdate;
+      console.log(updatedBooking);
+
       fetchBookings();
-  
+
       toast.success("Booking updated successfully!");
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
   };
-  
+
+  const openModal = (booking) => {
+    setSelectedBooking(booking);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedBooking(null);
+  };
 
   return (
     <div>
@@ -62,6 +97,7 @@ const BookingsLists = () => {
                 <th>Hall</th>
                 <th>Total Amount</th>
                 <th>Order Status</th>
+                <th>View</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -82,12 +118,23 @@ const BookingsLists = () => {
                     <td>{booking?.totalAmount}</td>
                     <td>{booking?.status}</td>
                     <td>
-                      <label className="flex items-center">
-                        <Switch
-                          onChange={(isChecked) => handleChange(isChecked, booking?._id)}
-                          checked={checkedState[booking?._id] || false}
-                        />
-                      </label>
+                      <button onClick={() => openModal(booking)}>
+                        view Details
+                      </button>
+                    </td>
+                    <td>
+                      {booking?.status !== "canceled" ? (
+                        <label className="flex items-center">
+                          <Switch
+                            onChange={(isChecked) =>
+                              handleChange(isChecked, booking?._id)
+                            }
+                            checked={checkedState[booking?._id] || false}
+                          />
+                        </label>
+                      ) : (
+                        <span>{booking?.status}</span>
+                      )}
                     </td>
                   </tr>
                 ))
@@ -102,6 +149,12 @@ const BookingsLists = () => {
               )}
             </tbody>
           </table>
+          {/* Modal for booking details */}
+          <BookingModal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            booking={selectedBooking}
+          />
         </div>
       </div>
     </div>

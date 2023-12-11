@@ -181,7 +181,15 @@ const HandleStartDateChange = (date) => {
 const HandleEndDateChange = (date) => {
   setEndDate(date);
 };
-  
+const swiperParams = {
+  slidesPerView: 1,
+  spaceBetween: 0,
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+  // Add any other Swiper parameters you need
+};
   return (
     <main>
       <div>
@@ -189,19 +197,21 @@ const HandleEndDateChange = (date) => {
           <div className="flexColStart paddings innerWidth property-container">
             {/* image */}
             <div className="bg-white-500 mb-2 rounded-2xl overflow-hidden">
-              <Swiper className="z-0 h-96">
-                {halls.map((hall) =>
-                  hall.hallImage.map((image, index) => (
-                    <SwiperSlide key={index}>
-                      <img
-                        className=" p-3 w-full  rounded-2xl object-cover aspect-square"
-                        src={hall.hallImage[0]}
-                        alt={`Hall Image for ${hall.hallName}`}
-                      />
-                    </SwiperSlide>
-                  ))
-                )}
-              </Swiper>
+            {halls.map((hall) =>
+            <Swiper navigation>
+            {hall.hallImage.map((url) => (
+              <SwiperSlide key={url}>
+                <div
+                  className='h-[550px]'
+                  style={{
+                    background: `url(${url}) center no-repeat`,
+                    backgroundSize: 'cover',
+                  }}
+                ></div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+            )}
             </div>
           </div>
         </div>
@@ -223,11 +233,11 @@ const HandleEndDateChange = (date) => {
                   <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
                     Price: Rs.{hall.pricePerDay}
                   </p>
-                  <p className="text-slate-800">
+                  <div className="text-slate-800">
                     <div className="font-semibold text-black">
                       Capacity -{hall.capacity}
                     </div>
-                  </p>
+                  </div>
                   <div className="font-semibold text-black whitespace-pre-line">
                     Description: {hall.description}
                   </div>

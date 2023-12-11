@@ -1,4 +1,3 @@
-import React from 'react'
 import CreateNewHall from '../../components/Admin/CreateNewHall';
 import Sidebar from '../../components/Admin/Sidebar';
 import AdminHeader from '../../components/Admin/AdminHeader';

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import {
@@ -10,6 +11,8 @@ import {
 
 const AboutList = () => {
   const [aboutData, setAboutData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   const [selectedAbout, setSelectedAbout] = useState(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedDescription, setEditedDescription] = useState("");
@@ -21,7 +24,7 @@ const AboutList = () => {
 
   useEffect(() => {
     fetchAbout();
-  }, []);
+  }, [currentPage]);
 
   const handleEdit = (about) => {
     setSelectedAbout(about);
@@ -33,7 +36,6 @@ const AboutList = () => {
 
   const handleDelete = async (aboutId) => {
     try {
-      console.log(aboutId, "FFF");
       const res = await deleteAbout(aboutId).unwrap();
       toast.success(res.message || "Banner deleted successfully");
       await fetchAbout();
@@ -44,7 +46,6 @@ const AboutList = () => {
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
-    console.log(file, "ASZDVXCS");
     if (file) {
       try {
         const formData = new FormData();
@@ -66,17 +67,16 @@ const AboutList = () => {
       }
     }
   };
-  const handleSaveAbout = async (editedAbout) => {
+  const handleSaveAbout = async () => {
     const updatedAbout = {
       _id: selectedAbout._id,
       description: editedDescription,
       title: editedTitle,
       image: editedImage,
     };
-    console.log("save About", updatedAbout);
     try {
       const res = await updateAboutData(updatedAbout).unwrap();
-      console.log(res, "RES");
+      console.log(res);
       setIsModalOpen(false);
       await fetchAbout();
     } catch (err) {
@@ -86,7 +86,6 @@ const AboutList = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setSelectedBanner(null);
   };
 
   const fetchAbout = async () => {
@@ -106,16 +105,26 @@ const AboutList = () => {
     }
     return text;
   };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = aboutData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(aboutData.length / itemsPerPage);
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <div>
       <div>
         <Link
           to="/admin/about/new"
-          className="bg-blue-500 text-white px-4 py-2 rounded-md"
+          className="bg-emerald-700 text-white px-4 py-2 mb-6 rounded-md"
         >
           Add New
         </Link>
-        <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
+        <div className="bg-white px-4 pt-3 pb-4 mt-3 rounded-sm border border-gray-200 flex-1">
           <strong className="text-gray-700 font-medium">About List</strong>
           <div className="border-x border-gray-200 rounded-sm mt-3">
             <table className="w-full text-gray-700">
@@ -130,7 +139,7 @@ const AboutList = () => {
               </thead>
               <tbody className="space-y-2">
                 {aboutData && aboutData.length > 0 ? (
-                  aboutData.map((about) => (
+                  currentItems.map((about) => (
                     <tr key={about?._id}>
                       <td>{truncateText(about?.title, 15)}</td>
                       <td>{truncateText(about?.description, 10)}</td>
@@ -171,6 +180,26 @@ const AboutList = () => {
         </div>
       </div>
 
+      {/* Pagination controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="mx-2 px-4 py-2 bg-blue-500 text-white rounded-md"
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="mx-2 px-4 py-2 bg-blue-500 text-white rounded-md"
+          >
+            Next
+          </button>
+        </div>
+      )}
+
       {/* Modal for editing */}
       {isModalOpen && (
         <div
@@ -210,6 +239,7 @@ const AboutList = () => {
                 </button>
               </div>
               {/* Modal body */}
+
               <form>
                 <label
                   htmlFor="description"

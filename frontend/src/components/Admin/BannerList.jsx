@@ -1,44 +1,53 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { FaEdit, FaTrash } from 'react-icons/fa';
-import { useDeleteBannerMutation, useFetchBannerMutation, useUpdateBannerMutation } from '../../Slices/adminApiSlice';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
+import {
+  useDeleteBannerMutation,
+  useFetchBannerMutation,
+  useUpdateBannerMutation,
+} from "../../Slices/adminApiSlice";
 
 const BannerList = () => {
   const [bannerData, setBannerData] = useState([]);
   const [selectedBanner, setSelectedBanner] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editedDescription, setEditedDescription] = useState('');
-  const [editedPage, setEditedPage] = useState('');
-  const [editedImage, setEditedImage] = useState('');
+  const [editedDescription, setEditedDescription] = useState("");
+  const [editedPage, setEditedPage] = useState("");
+  const [editedImage, setEditedImage] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(7);
   const [getBannerData] = useFetchBannerMutation();
   const [updateBannerData] = useUpdateBannerMutation();
   const [deleteBanner] = useDeleteBannerMutation();
   useEffect(() => {
     fetchBanner();
-  }, []);
+  }, [currentPage]);
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
-    console.log(file,"ASZDVXCS")
-    if(file) {
-        try {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', 'up0dzyua');
-            formData.append('cloud_name', 'dszrxbtng');
-            const response = await fetch('https://api.cloudinary.com/v1_1/dszrxbtng/image/upload', {
-              method: 'POST',
-              body: formData,
-            });
-            const data = await response.json();
-            setEditedImage(data.secure_url);
-            toast.success('Image uploaded successfully to Cloudinary');
-        } catch (err) {
-            toast.error('Error uploading image to Cloudinary');
-        }
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "up0dzyua");
+        formData.append("cloud_name", "dszrxbtng");
+        const response = await fetch(
+          "https://api.cloudinary.com/v1_1/dszrxbtng/image/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        const data = await response.json();
+        setEditedImage(data.secure_url);
+        toast.success("Image uploaded successfully to Cloudinary");
+      } catch (err) {
+        toast.error("Error uploading image to Cloudinary");
+      }
     }
-  }
+  };
 
   const fetchBanner = async () => {
     try {
@@ -52,38 +61,34 @@ const BannerList = () => {
 
   const handleEdit = (banner) => {
     setSelectedBanner(banner);
-    setEditedDescription(banner.description || '');
-    setEditedPage(banner.page || '');
-    setEditedImage(banner.image || '')
+    setEditedDescription(banner.description || "");
+    setEditedPage(banner.page || "");
+    setEditedImage(banner.image || "");
     setIsModalOpen(true);
   };
 
-  const handleDelete = async(bannerId) => {
- try{
-  console.log(bannerId,"FFFF")
-  const res = await deleteBanner(bannerId).unwrap();
-      toast.success(res.message || 'Banner deleted successfully');
+  const handleDelete = async (bannerId) => {
+    try {
+      const res = await deleteBanner(bannerId).unwrap();
+      toast.success(res.message || "Banner deleted successfully");
       await fetchBanner();
-} catch (err) {
-  toast.error(err?.data?.message || err.error);
-}
-  }
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
 
-  const handleSaveBanner = async (editedBanner) => {
+  const handleSaveBanner = async () => {
     const updatedBanner = {
       _id: selectedBanner._id,
       description: editedDescription,
       page: editedPage,
       image: editedImage,
     };
-    console.log('Save banner:', updatedBanner);
     try {
-    // Implement the logic to save the edited banner
-   
-    const res = await updateBannerData(updatedBanner).unwrap();
-    console.log(res,"GGGG")
-    setIsModalOpen(false);
-    await fetchBanner();
+      const res = await updateBannerData(updatedBanner).unwrap();
+      console.log(res);
+      setIsModalOpen(false);
+      await fetchBanner();
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -94,74 +99,118 @@ const BannerList = () => {
     setSelectedBanner(null);
   };
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = bannerData.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(bannerData.length / itemsPerPage);
+
+  const paginate = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
   return (
     <div>
-      <div>
+      <div className="mb-3">
         <Link
-          to="/admin/banner/new"
-          className="bg-blue-500 text-white px-4 py-2 rounded-md"
+          to="/admin/caterings/new"
+          className="bg-emerald-700 text-white px-4 py-2 mb-6 rounded-md"
         >
           Add New
         </Link>
-        <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
-          <strong className="text-gray-700 font-medium">Banner List</strong>
-          <div className="border-x border-gray-200 rounded-sm mt-3">
-            <table className="w-full text-gray-700">
-              <thead>
-                <tr>
-                  <th className="hidden">ID</th>
-                  <th>Page</th>
-                  <th>Description</th>
-                  <th>Image</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody className="space-y-2">
-                {bannerData && bannerData.length > 0 ? (
-                  bannerData.map((banner) => (
-                    <tr key={banner?._id}>
-                      <td>{banner?.page}</td>
-                      <td>{banner?.description}</td>
-                      <td>
-                        {banner?.image && (
-                          <img
-                            src={banner?.image}
-                            alt={banner?.page}
-                            width="50"
-                            height="50"
-                          />
-                        )}
-                      </td>
-                      <td>
-                        <button
-                          className="text-green-600"
-                          onClick={() => handleEdit(banner)}
-                        >
-                          <FaEdit />
-                        </button>
-                        <button
-                          className="ml-3 text-red-700"
-                          onClick={() => handleDelete(banner)}
-                        >
-                          <FaTrash />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="3">No Banner found.</td>
+      </div>
+      <div className="bg-white px-4 pb-4 rounded-sm border border-gray-200 flex-1">
+        <strong className="text-gray-700 font-medium">Banner List</strong>
+        <div className="border-x border-gray-200 rounded-sm mt-3">
+          <table className="w-full text-gray-700">
+            <thead>
+              <tr>
+                <th className="hidden">ID</th>
+                <th>Page</th>
+                <th>Description</th>
+                <th>Image</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody className="space-y-2">
+              {currentItems && currentItems.length > 0 ? (
+                currentItems.map((banner) => (
+                  <tr key={banner?._id}>
+                    <td>{banner?.page}</td>
+                    <td>{banner?.description}</td>
                     <td>
-                      <button>Edit</button>
-                      <button>Delete</button>
+                      {banner?.image && (
+                        <img
+                          src={banner?.image}
+                          alt={banner?.page}
+                          width="50"
+                          height="50"
+                        />
+                      )}
+                    </td>
+                    <td>
+                      <button
+                        className="text-green-600"
+                        onClick={() => handleEdit(banner)}
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        className="ml-3 text-red-700"
+                        onClick={() => handleDelete(banner)}
+                      >
+                        <FaTrash />
+                      </button>
                     </td>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3">No Banner found.</td>
+                  <td>
+                    <button>Edit</button>
+                    <button>Delete</button>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
+
+      {/* Pagination controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-end mt-8">
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="mx-2 px-4 py-2 bg-slate-200 text-black rounded-md"
+          >
+            <BsChevronLeft />
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              onClick={() => paginate(i + 1)}
+              className={`mx-2 px-4 py-2 ${
+                currentPage === i + 1
+                  ? "bg-slate-200 text-black"
+                  : "bg-white text-gray-700"
+              } rounded-md`}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="mx-2 px-4 py-2bg-slate-200 text-black rounded-md"
+          >
+            <BsChevronRight />
+          </button>
+        </div>
+      )}
 
       {/* Modal for editing */}
       {isModalOpen && (

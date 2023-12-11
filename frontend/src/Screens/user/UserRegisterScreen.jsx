@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import React from 'react';
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector  } from "react-redux";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import {toast} from 'react-toastify';
 import { setCredentials } from "../../Slices/authSlice";
 import Loader from "../../components/user/Loader";
@@ -20,7 +20,7 @@ const UserRegisterScreen = () => {
     const dispatch = useDispatch();
 
     const [register, {isLoading}] = useRegisterMutation();
-    const {userInfo} = useSelector((state) => state.auth);
+    // const {userInfo} = useSelector((state) => state.auth);
 
     // useEffect(() => {
     //     if(userInfo) {

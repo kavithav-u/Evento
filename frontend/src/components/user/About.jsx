@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAboutMutation } from '../../Slices/usersApiSlice';
-import {toast} from 'react-toastify'
+import {toast} from 'react-toastify';
 
 const About = () => {
   

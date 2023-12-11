@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import UserHeader from '../../components/user/userHeader'
 import Footer from '../../components/user/Footer'
 import Search from '../../components/user/Search'

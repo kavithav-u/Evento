@@ -1,4 +1,3 @@
-import React from 'react';
 import Sidebar from '../../components/Admin/Sidebar';
 import AdminHeader from '../../components/Admin/AdminHeader';
 import CreateNewEvent from '../../components/Admin/CreateNewEvent';

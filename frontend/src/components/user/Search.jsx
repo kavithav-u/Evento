@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Row, Col } from "react-bootstrap"; // Use Bootstrap or any other styling library
-import {
-  useFetchSearchMutation,
-  useFilterSearchMutation,
-} from "../../Slices/usersApiSlice";
-import { BsChevronLeft, BsChevronRight } from "react-icons/bs"; // Import icons from react-icons library
+import { Card, Button, Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import {useFetchSearchMutation, useFilterSearchMutation } from "../../Slices/usersApiSlice";
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
+import { selectSelectedHallId } from "../../Slices/searchSlice";
 
 const HallList = () => {
   const [halls, setHalls] = useState([]);
   const [sortOrder, setSortOrder] = useState("");
+  const [selectedLocationId, setSelectedLocationId] = useState("");
+  const navigate = useNavigate();
   const [events, setEvents] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState("");
   const [selectedEventType, setSelectedEventType] = useState("");
   const [selectedEventId, setSelectedEventId] = useState("");
   const [responseArray, setResponseArray] = useState([]);
@@ -17,7 +21,12 @@ const HallList = () => {
   const hallsPerPage = 6;
   const [fetchSearch] = useFetchSearchMutation();
   const [fetchFilter] = useFilterSearchMutation();
-  useEffect(() => {
+  const selectedHallId = useSelector(selectSelectedHallId);
+console.log( selectedHallId,"sssssssssssssssssss")
+ const searchResult=responseArray.filter((e)=>e._id==selectedHallId)
+console.log("response",responseArray )
+console.log("result",searchResult )
+useEffect(() => {
     // Fetch hall details when the component mounts
     fetchHalls();
   }, [sortOrder, currentPage]);
@@ -27,22 +36,34 @@ const HallList = () => {
       const filters = {
         eventType: selectedEventType,
         eventId: selectedEventId,
+        location: selectedLocation,
+        sortOrder: sortOrder,
       };
-      const response = await fetchFilter(filters).unwrap();
-      const halls = response.filterData;
-      console.log("response", response, "halls", halls);
-      let sortedHalls;
-
-      if (sortOrder === "regularPrice_desc") {
-        sortedHalls = [...halls].sort((a, b) => b.pricePerDay - a.pricePerDay);
-      } else if (sortOrder === "regularPrice_asc") {
-        sortedHalls = [...halls].sort(
-          (a, b) => parseFloat(a.pricePerDay) - parseFloat(b.pricePerDay)
-        );
+      console.log(selectedLocation,"selectedLocation");
+      if (!selectedEventId ) {
+        const response = await fetchSearch().unwrap();
+        const halls = response.halls;
+        console.log(halls,"halls")
+        if (halls.length === 0) {
+          // Display toast message for no halls found
+          toast.error('No halls found');
+        } else {
+          console.log("SDfsdfvsdfsd")
+        setResponseArray(halls);
+        }
       } else {
-        sortedHalls = halls;
-      }
-      setResponseArray(sortedHalls);
+        console.log("fgfgfgfedcedc")
+        // If a specific event is selected, apply the filter
+        const response = await fetchFilter(filters).unwrap();
+        console.log(response,"response")
+        const halls = response.filterData;
+        if (halls.length === 0) {
+          setResponseArray([])
+          toast.error('No halls found');
+        } else {
+        setResponseArray(halls);
+    }
+  }
       setCurrentPage(1);
     } catch (error) {
       console.error("Error fetching hall details:", error);
@@ -53,9 +74,13 @@ const HallList = () => {
     setCurrentPage(newPage);
   };
 
+  const handleCardClick = async (hallId) => {
+    navigate(`/details/${hallId}`);
+  }
   const indexOfLastHall = currentPage * hallsPerPage;
   const indexOfFirstHall = indexOfLastHall - hallsPerPage;
   const currentHalls = responseArray.slice(indexOfFirstHall, indexOfLastHall);
+  
 
   const fetchHalls = async () => {
     try {
@@ -85,9 +110,10 @@ const HallList = () => {
               className="block appearance-none w-full md:w-auto bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
               value={selectedEventId}
               onChange={(e) => {
-                setSelectedEventId(e.target.value);
+                const selectedId = e.target.value;
+                setSelectedEventId(selectedId);
                 setSelectedEventType(
-                  e.target.options[e.target.selectedIndex].text
+                  selectedId ? e.target.options[e.target.selectedIndex].text : ""
                 );
               }}
             >
@@ -117,13 +143,32 @@ const HallList = () => {
             </div>
           </div>
         </div>
-
+        <div className="flex items-center gap-5 mb-4 mt-10">
+          <label className="font-semibold">Location</label>
+          <select
+    value={selectedLocationId}
+    onChange={(e) => {
+      const selectedId = e.target.value;
+      setSelectedLocationId(selectedId);
+      const selectedLocation = e.target.options[e.target.selectedIndex].text;
+      setSelectedLocation(selectedLocation);
+    }}
+    className="border rounded-lg p-3"
+  >
+    <option value="">All Locations</option>
+    {halls.map((hall) => (
+      <option key={hall._id} value={hall._id}>
+        {hall.location}
+      </option>
+    ))}
+  </select>
+        </div>
         {/* Sort Row */}
         <div className="flex items-center gap-5 mb-4 mt-10">
           <label className="font-semibold">Sort:</label>
           <select
-            // onChange={handleChange}
-            // value={sortOrder}
+            onChange={ (e) => setSortOrder(e.target.value)}
+            value={sortOrder}
             id="sort_order"
             className="border rounded-lg p-3"
           >
@@ -146,27 +191,59 @@ const HallList = () => {
           Listing results:
         </h1>
         <div className="p-7 flex flex-wrap gap-4">
-          <Row xs={1} md={3} className="g-4">
-            {currentHalls.map((hall) => (
-              <Col key={hall._id}>
-                <Card style={{ width: "18rem", margin: "10px" }}>
-                  <Card.Img
-                    className="h-64"
-                    variant="top"
-                    src={hall.hallImage[0]}
-                    alt={hall.hallName}
-                  />
-                  <Card.Body>
-                    <Card.Title>{hall.hallName}</Card.Title>
-                    {hall.description.split(" ").slice(0, 10).join(" ")}...
-                    <Card.Text>${hall.pricePerDay} per Day</Card.Text>
-                    <Card.Text>{hall.location}</Card.Text>
-                    <Button variant="primary">Book Now</Button>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
+          {searchResult && searchResult.length > 0 ? (
+            <Row xs={1} md={3} className="g-4">
+              {searchResult.map((hall) => (
+                <Col key={hall._id}>
+                  <Card style={{ width: "18rem", margin: "10px" }} 
+                    onClick={() => handleCardClick(hall._id)}>
+                    <Card.Img
+                      className="h-64"
+                      variant="top"
+                      src={hall.hallImage[0]}
+                      alt={hall.hallName}
+                    />
+                    <Card.Body>
+                      <Card.Title>{hall.hallName}</Card.Title>
+                      {hall.description.split(" ").slice(0, 10).join(" ")}...
+                      <Card.Text>${hall.pricePerDay} per Day</Card.Text>
+                      <Card.Text>{hall.location}</Card.Text>
+                      <Button variant="primary">Book Now</Button>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          ) : (
+            currentHalls && currentHalls.length > 0 ? (
+              <Row xs={1} md={3} className="g-4">
+                {currentHalls.map((hall) => (
+                  <Col key={hall._id}>
+                    <Card style={{ width: "18rem", margin: "10px" }} 
+                      onClick={() => handleCardClick(hall._id)}>
+                      <Card.Img
+                        className="h-64"
+                        variant="top"
+                        src={hall.hallImage[0]}
+                        alt={hall.hallName}
+                      />
+                      <Card.Body>
+                        <Card.Title>{hall.hallName}</Card.Title>
+                        {hall.description.split(" ").slice(0, 10).join(" ")}...
+                        <Card.Text>${hall.pricePerDay} per Day</Card.Text>
+                        <Card.Text>{hall.location}</Card.Text>
+                        <Button variant="primary">Book Now</Button>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            ) : (
+              <div className="text-center text-gray-700 mt-5">
+                <p>Nothing found</p>
+              </div>
+            )
+          )}
         </div>
         {/* Pagination */}
         {responseArray.length > hallsPerPage && (

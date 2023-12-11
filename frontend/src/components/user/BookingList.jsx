@@ -5,6 +5,8 @@ import { logout } from '../../Slices/authSlice';
 import {toast} from 'react-toastify';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
+
 
 
 const BookingList = () => {
@@ -14,13 +16,15 @@ const BookingList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const { userInfo } = useSelector((state) => state.auth);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const dispatch = useDispatch();
+  const itemsPerPage = 5;
   useEffect(() => {
     fetchBookings();
-  }, []);
+  }, [currentPage]);
 
-  const fetchBookings = async (req, res) => {
+  const fetchBookings = async () => {
     try {
       const _id = userInfo._id;
       const res = await getBookingdata(_id).unwrap();
@@ -54,11 +58,26 @@ const BookingList = () => {
     try{
       const response = await cancelBookingApi(bookingId);
       console.log(response,"responce");
+      setBookingData((prevBookingData) =>
+      prevBookingData.map((booking) =>
+        booking._id === selectedBooking._id
+          ? { ...booking, status: "canceled" }
+          : booking
+      )
+    );
       closeModal();
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
-  }
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = bookingData.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
 
   return (
     <div>
@@ -67,19 +86,19 @@ const BookingList = () => {
           <table className="min-w-full leading-normal">
             <thead>
               <tr>
-                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   SL NO.
                 </th>
-                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Event
                 </th>
-                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Amount
                 </th>
-                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   City
                 </th>
-                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   View
                 </th>
 
@@ -87,29 +106,29 @@ const BookingList = () => {
               </tr>
             </thead>
             <tbody>
-              {bookingData?.map((booking, index) => (
+              {currentItems?.map((booking, index) => (
                 <React.Fragment key={booking._id}>
                   <tr>
-                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-black">
+                    <td className="px-4 py-3 border-b border-gray-200 bg-white text-sm text-black">
                       {index + 1}
                     </td>
-                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <img
-                        className="w-10 h-10 rounded-full"
-                        src={booking.hall?.hallImage[0]}
-                        alt="Avatar Tailwind CSS Component"
-                      />
-                      <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm">
-                        {booking.hall.events?.eventType}
-                      </td>
-                    </td>
-                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                    <td className="px-4 py-3 border-b border-gray-200 bg-white text-sm ml-36">
+    <div className="flex flex-col ">
+      <img
+        className="w-10 h-10 rounded-full"
+        src={booking.hall?.hallImage[0]}
+        alt="Avatar Tailwind CSS Component"
+      />
+      <div >{booking.hall.events?.eventType}</div>
+    </div>
+  </td>
+                    <td className="px-4 py-3 border-b border-gray-200 bg-white text-sm">
                       {booking.totalAmount}
                     </td>
-                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                    <td className="px-4 py-3 border-b border-gray-200 bg-white text-sm">
                       {booking.hall?.location}
                     </td>
-                    <td className=" border-b border-gray-200 bg-white text-sm">
+                    <td className=" px-4 py-3 border-b border-gray-200 bg-white text-sm">
                       <button
                         className="btn"
                         onClick={() => handleBooking(booking)}
@@ -163,13 +182,15 @@ const BookingList = () => {
                                   <p className="text-muted mb-2">
                                     Order ID{" "}
                                     <span className="fw-bold text-body">
-                                      {selectedBooking._id}
+                                      {selectedBooking.orderId}
                                     </span>
                                   </p>
                                   <p className="text-muted mb-0">
                                     Place On{" "}
                                     <span className="fw-bold text-body">
-                                      {selectedBooking.createdAt}
+                                      {selectedBooking.createdAt
+                                        ? new Date(selectedBooking.createdAt).toLocaleDateString()
+                                        : "N/A"}
                                     </span>
                                   </p>
                                 </div>
@@ -219,14 +240,16 @@ const BookingList = () => {
                               </div>
                             </div>
                             <div className="card-footer p-4">
-                              <div className=" justify-content-between">
-                                <h5 className="fw-normal mb-0">
-                                <button onClick={openConfirmationModal}>
-                                  Cancel Booking
-                                </button>                                
-                                </h5>
-                              </div>
-                            </div>
+  <div className="d-flex justify-content-between">
+    <h5 className="fw-normal mb-0">
+      {selectedBooking.status !== 'canceled' && (
+        <button onClick={openConfirmationModal}>
+          Cancel Booking
+        </button>
+      )}
+    </h5>
+  </div>
+</div>
                           </div>
                         </div>
                       </div>
@@ -268,6 +291,43 @@ const BookingList = () => {
     </div>
   </div>
 )}
+
+      {/* Pagination */}
+      <div className="flex justify-end">
+      <button
+    onClick={() => setCurrentPage(currentPage - 1)}
+    className={`mx-1 px-3 py-2 rounded ${
+      currentPage === 1
+        ? 'bg-gray-300 text-gray-700 cursor-not-allowed'
+        : 'bg-gray-700 text-white'
+    }`}
+    disabled={currentPage === 1}
+  >
+    <BsChevronLeft className="h-5 w-5" />
+  </button>
+        {[...Array(Math.ceil(bookingData.length / itemsPerPage)).keys()].map((number) => (
+          <button
+            key={number + 1}
+            onClick={() => paginate(number + 1)}
+            className={`mx-1 px-3 py-2 rounded ${
+              currentPage === number + 1 ? 'bg-gray-700 text-white' : 'bg-gray-300 text-gray-700'
+            }`}
+          >
+            {number + 1}
+          </button>
+        ))}
+         <button
+    onClick={() => setCurrentPage(currentPage + 1)}
+    className={`mx-1 px-3 py-2 rounded ${
+      currentPage === Math.ceil(bookingData.length / itemsPerPage)
+        ? 'bg-gray-300 text-gray-700 cursor-not-allowed'
+        : 'bg-gray-700 text-white'
+    }`}
+    disabled={currentPage === Math.ceil(bookingData.length / itemsPerPage)}
+  >
+    <BsChevronRight className="h-5 w-5" />
+  </button>
+      </div>
 
     </div>
   );

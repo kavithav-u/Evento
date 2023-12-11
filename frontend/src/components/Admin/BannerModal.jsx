@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { useFetchBannerMutation, useUpdateBannerMutation } from '../../Slices/adminApiSlice';
-import BannerModal from './BannerModal'; // Import the BannerModal component
+import React, { useEffect, useState } from "react";
+
+import { toast } from "react-toastify";
+import {
+  useFetchBannerMutation,
+  useUpdateBannerMutation,
+} from "../../Slices/adminApiSlice";
+import BannerModal from "./BannerModal";
 
 const BannerList = () => {
   const [bannerData, setBannerData] = useState([]);
@@ -10,7 +13,7 @@ const BannerList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [getBannerData] = useFetchBannerMutation();
-  const [updateBanner] = useUpdateBannerMutation(); // Add the updateBanner mutation
+  const [updateBanner] = useUpdateBannerMutation();
 
   useEffect(() => {
     fetchBanner();
@@ -19,7 +22,6 @@ const BannerList = () => {
   const fetchBanner = async () => {
     try {
       const res = await getBannerData().unwrap();
-      console.log(res, "DCSD");
       const myBannerData = res.banner;
       setBannerData(myBannerData);
     } catch (err) {
@@ -34,10 +36,12 @@ const BannerList = () => {
 
   const handleSaveBanner = async (editedBanner) => {
     try {
-      await updateBanner({ bannerId: selectedBanner._id, updatedBanner: editedBanner }).unwrap();
-      // Reload the banner data after updating
+      await updateBanner({
+        bannerId: selectedBanner._id,
+        updatedBanner: editedBanner,
+      }).unwrap();
       fetchBanner();
-      toast.success('Banner updated successfully');
+      toast.success("Banner updated successfully");
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -50,19 +54,14 @@ const BannerList = () => {
 
   return (
     <div>
-      {/* ... Your existing code ... */}
-
       {bannerData.map((banner) => (
         <tr key={banner?._id}>
-          {/* ... Other columns ... */}
           <td>
             <button onClick={() => handleEdit(banner)}>Edit</button>
-            {/* Add a delete button if needed */}
           </td>
         </tr>
       ))}
 
-      {/* Render the BannerModal */}
       <BannerModal
         banner={selectedBanner}
         isOpen={isModalOpen}

@@ -1,4 +1,4 @@
-import React from 'react'
+
 import BannerList from '../../components/Admin/BannerList';
 import Sidebar from '../../components/Admin/Sidebar';
 import AdminHeader from '../../components/Admin/AdminHeader';
