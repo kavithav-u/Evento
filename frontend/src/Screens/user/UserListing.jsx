@@ -9,6 +9,7 @@ const UserListing = () => {
     <div>
         <UserHeader />
         <Listing />
+
         <Footer />
     </div>
   )

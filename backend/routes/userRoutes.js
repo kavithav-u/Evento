@@ -29,6 +29,7 @@ import {
   cancelBookings,
 } from "../controllers/bookingController.js";
 import { fectchImages } from "../controllers/galleryController.js";
+import { getAllReview, newReview } from "../controllers/reviewController.js";
 
 router.get("/", homeUser);
 router.post("/login", loginUser);
@@ -51,4 +52,6 @@ router.get("/gallery", fectchImages);
 router.get("/search", getSearchListing);
 router.post("/search", filterSearch);
 router.post("/elasticSearch", elasticSearch);
+router.post('/review',newReview)
+router.get('/review/:userId',getAllReview)
 export default router;

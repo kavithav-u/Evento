@@ -12,7 +12,7 @@ import { selectSelectedHallId, setSelectedHallId } from '../../Slices/searchSlic
 const UserHeader = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [input, setInput] = useState('')
+  const [input, setInput] = useState('');
   const [hallResults, setHallResults] = useState([]);
   const [selectedHall, setSelectedHall] = useState(null);
   const [logoutApiCall] = useLogoutMutation();
@@ -70,7 +70,7 @@ const suggestionClickHandler = (hallId) => {
 
   setHallResults([]);
 
-  console.log('Selected Hall ID:', hallId);
+  // console.log('Selected Hall ID:', hallId);
 };
 
   
@@ -88,13 +88,13 @@ const suggestionClickHandler = (hallId) => {
       
     }
   };
-  console.log(hallResults,"after emptying")
+  // console.log(hallResults,"after emptying")
 
 
   return (
     <header className="bg-slate-200 shadow-md relative z-10">
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
-        <Link to="/">
+        <Link to="/" className='no-underline'>
           <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
             <span className="text-slate-500">Evento</span>
           </h1>
@@ -111,7 +111,7 @@ const suggestionClickHandler = (hallId) => {
             placeholder='Search...'
             className='bg-transparent focus:outline-none w-24 sm:w-64'
           />
-          <button>
+          <button onClick={() => navigate('/search')}>
 
             <FaSearch className='text-slate-600' />
           </button>
@@ -154,7 +154,7 @@ const suggestionClickHandler = (hallId) => {
     className="text-slate-700 hover:underline cursor-pointer"
     onClick={toggleDropdown}
   >
-    {userInfo.image ? (
+    {userInfo.image && userInfo.image.length>0 ? (
       <img
         src={userInfo.image}
         alt={`Avatar of ${userInfo.name}`}
@@ -176,8 +176,11 @@ const suggestionClickHandler = (hallId) => {
 
             {isDropdownOpen && userInfo && (
               <div className="absolute bg-black mt-2 p-2 rounded-lg shadow-lg">
-                <Link to="/profile" className="block py-2 px-4  text-white hover:bg-slate-600 ">
+                <Link to="/profile" className="block py-2 px-4  text-white hover:bg-slate-600 no-underline">
                   Profile
+                </Link>
+                <Link to="/chat" className="block py-2 px-4  text-white hover:bg-slate-600 no-underline">
+                  MyChats
                 </Link>
                 <div
                   className="block py-2 px-4 cursor-pointer  text-white hover:bg-slate-600"

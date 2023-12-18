@@ -8,21 +8,19 @@ import Booking from "../models/bookingsSchema.js";
 const adminLogin = asyncHandler(async (req, res) => {
   try {
     const { email, password } = req.body;
-console.log("req.body", req.body)
+    // console.log("req.body", req.body);
     if (
       email === process.env.AdminEmail &&
       password === process.env.AdminPassword
     ) {
-      console.log("admin login")
+      // console.log("admin login");
 
       generateAdminToken(res, email);
       res.status(200).json({ success: true, email, message: "login sucesss" });
     } else {
-      console.log("sdfsdfs")
       res.json({ message: "Invalid email or password" });
     }
   } catch (error) {
-    console.log("gggg")
     res.json({ message: "server Issue" });
   }
 });
@@ -46,13 +44,11 @@ const adminAction = async (req, res) => {
       await user.save();
 
       const statusMessage = user.isActive ? "activated" : "blocked";
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: "User ${statusMessage} Successfully",
-          isActive: updatedActiveStatus,
-        });
+      res.status(200).json({
+        success: true,
+        message: "User ${statusMessage} Successfully",
+        isActive: updatedActiveStatus,
+      });
     } else {
       res.status(404).json({ message: "User not found" });
     }
@@ -70,29 +66,28 @@ const adminLogout = (req, res) => {
   res.status(200).json({ message: "User Logged out successfully" });
 };
 
-
-const getDashboard =  async (req,res ) => {
+const getDashboard = async (req, res) => {
   try {
     const monthlySales = await Booking.aggregate([
       {
         $match: {
-          status: 'confirmed',
+          status: "confirmed",
         },
       },
       {
         $group: {
           _id: {
-            month: { $month: '$createdAt' },
-            year: { $year: '$createdAt' },
+            month: { $month: "$createdAt" },
+            year: { $year: "$createdAt" },
           },
           totalSales: { $sum: { $toDouble: "$totalAmount" } },
         },
       },
       {
-        $sort: { '_id.year': 1, '_id.month': 1 },
+        $sort: { "_id.year": 1, "_id.month": 1 },
       },
     ]);
-    console.log(monthlySales,"monthlSales")
+    // console.log(monthlySales, "monthlSales");
     const TotalSales = await Booking.aggregate([
       {
         $group: {
@@ -103,16 +98,20 @@ const getDashboard =  async (req,res ) => {
     ]);
     const booking = await Booking.find().count();
     const TotalUsers = await User.find().count();
-    res.status(200).json({ success:true, message:"success",TotalSales, monthlySales, booking,TotalUsers });
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "success",
+        TotalSales,
+        monthlySales,
+        booking,
+        TotalUsers,
+      });
   } catch (error) {
     console.error("Error updating user:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
-}
+};
 
-export 
-{ adminLogout, 
-  adminLogin, 
-  getUserList, 
-  adminAction,
-  getDashboard };
+export { adminLogout, adminLogin, getUserList, adminAction, getDashboard };

@@ -26,7 +26,7 @@ export default function OAuth() {
                 name: result.user.displayName,
                 email: result.user.email,
                 image: result.user.photoURL,}).unwrap();
-                console.log("Re",res)
+                
 
                 dispatch(setCredentials({...res}));
                 navigate('/')

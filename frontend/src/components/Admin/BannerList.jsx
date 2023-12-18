@@ -8,6 +8,7 @@ import {
   useFetchBannerMutation,
   useUpdateBannerMutation,
 } from "../../Slices/adminApiSlice";
+import Loader from "../user/Loader";
 
 const BannerList = () => {
   const [bannerData, setBannerData] = useState([]);
@@ -18,7 +19,7 @@ const BannerList = () => {
   const [editedImage, setEditedImage] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(7);
-  const [getBannerData] = useFetchBannerMutation();
+  const [getBannerData, {isLoading}] = useFetchBannerMutation();
   const [updateBannerData] = useUpdateBannerMutation();
   const [deleteBanner] = useDeleteBannerMutation();
   useEffect(() => {
@@ -67,8 +68,10 @@ const BannerList = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (bannerId) => {
+  const handleDelete = async (banner) => {
     try {
+      const bannerId =banner._id;
+      console.log(bannerId,"JJJJJJJ")
       const res = await deleteBanner(bannerId).unwrap();
       toast.success(res.message || "Banner deleted successfully");
       await fetchBanner();
@@ -114,7 +117,7 @@ const BannerList = () => {
     <div>
       <div className="mb-3">
         <Link
-          to="/admin/caterings/new"
+          to="/admin/banner/new"
           className="bg-emerald-700 text-white px-4 py-2 mb-6 rounded-md"
         >
           Add New
@@ -134,7 +137,16 @@ const BannerList = () => {
               </tr>
             </thead>
             <tbody className="space-y-2">
-              {currentItems && currentItems.length > 0 ? (
+            {isLoading ? (
+                   <tr>
+                   <td colSpan="5">
+                     <div className="flex justify-center items-center py-8">
+                       <Loader />
+                     </div>
+                   </td>
+                 </tr>
+                ) : (
+              currentItems && currentItems.length > 0 ? (
                 currentItems.map((banner) => (
                   <tr key={banner?._id}>
                     <td>{banner?.page}</td>
@@ -142,6 +154,7 @@ const BannerList = () => {
                     <td>
                       {banner?.image && (
                         <img
+                        loading="lazy"
                           src={banner?.image}
                           alt={banner?.page}
                           width="50"
@@ -173,7 +186,8 @@ const BannerList = () => {
                     <button>Delete</button>
                   </td>
                 </tr>
-              )}
+              )
+                )}
             </tbody>
           </table>
         </div>
@@ -211,6 +225,7 @@ const BannerList = () => {
           </button>
         </div>
       )}
+      
 
       {/* Modal for editing */}
       {isModalOpen && (

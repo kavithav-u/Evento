@@ -37,6 +37,8 @@ import Gallery from './Screens/user/Gallery.jsx';
 import SearchListing from './Screens/user/SearchListing.jsx';
 import AdminBookingScreen from './Screens/Admin/AdminBookingScreen.jsx';
 import DashboardScreen from './Screens/Admin/DashboardScreen.jsx';
+import ChatScreen from './Screens/user/chatScreen.jsx';
+import ChatAdmin from './Screens/Admin/ChatAdmin.jsx';
 
 const router = createBrowserRouter([
   {
@@ -107,6 +109,16 @@ const router = createBrowserRouter([
           },
         ],
       },
+      {
+        path: 'chat',
+        element: <PrivateRoute />,
+        children: [
+          {
+            index: true,
+            element: <ChatScreen />,
+          },
+        ],
+      }, 
     ],
   },
   {
@@ -276,6 +288,16 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <CreateCateringScreen />,
+      },
+    ],
+  },,
+  {
+    path: 'chats',
+    element: <AdminPrivateRoute />,
+    children: [
+      {
+        index: true,
+        element: <ChatAdmin />,
       },
     ],
   },,

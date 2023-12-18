@@ -8,6 +8,7 @@ import {
   useFetchAboutMutation,
   useDeleteAboutMutation,
 } from "../../Slices/adminApiSlice";
+import Loader from "../user/Loader";
 
 const AboutList = () => {
   const [aboutData, setAboutData] = useState([]);
@@ -18,7 +19,7 @@ const AboutList = () => {
   const [editedDescription, setEditedDescription] = useState("");
   const [editedImage, setEditedImage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [getAboutData] = useFetchAboutMutation();
+  const [getAboutData, {isLoading}] = useFetchAboutMutation();
   const [updateAboutData] = useUpdateAboutMutation();
   const [deleteAbout] = useDeleteAboutMutation();
 
@@ -138,7 +139,16 @@ const AboutList = () => {
                 </tr>
               </thead>
               <tbody className="space-y-2">
-                {aboutData && aboutData.length > 0 ? (
+                {isLoading ? (
+                   <tr>
+                   <td colSpan="5">
+                     <div className="flex justify-center items-center py-8">
+                       <Loader />
+                     </div>
+                   </td>
+                 </tr>
+                ) : (
+                aboutData && aboutData.length > 0 ? (
                   currentItems.map((about) => (
                     <tr key={about?._id}>
                       <td>{truncateText(about?.title, 15)}</td>
@@ -146,6 +156,7 @@ const AboutList = () => {
                       <td>
                         {about?.image && (
                           <img
+                          loading="lazy"
                             src={about?.image}
                             alt={about?.title}
                             width="50"
@@ -173,6 +184,7 @@ const AboutList = () => {
                   <tr>
                     <td colSpan="3">Nothing found.</td>
                   </tr>
+                )
                 )}
               </tbody>
             </table>

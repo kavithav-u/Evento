@@ -9,6 +9,7 @@ import { useAdminActionhallMutation } from "../../Slices/adminApiSlice";
 import { FaEdit } from "react-icons/fa";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { truncateDescription } from "../user/Banner";
+import Loader from "../user/Loader";
 const HallList = () => {
   const [hallData, setHallData] = useState([]);
   const [selectedHall, setSelectedHall] = useState("");
@@ -20,7 +21,7 @@ const HallList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(7);
-  const [getHallData] = useFetchHallsMutation();
+  const [getHallData, {isLoading}] = useFetchHallsMutation();
   const [updateHallData] = useUpdateHallMutation();
   const [toggleHallStatus] = useAdminActionhallMutation();
 
@@ -154,7 +155,16 @@ const HallList = () => {
                 </tr>
               </thead>
               <tbody className="space-y-2">
-                {currentItems && currentItems.length > 0 ? (
+              {isLoading ? (
+                   <tr>
+                   <td colSpan="5">
+                     <div className="flex justify-center items-center py-8">
+                       <Loader />
+                     </div>
+                   </td>
+                 </tr>
+                ) : (
+                currentItems && currentItems.length > 0 ? (
                   currentItems.map((hall) => (
                     <tr key={hall?._id}>
                       <td>{hall?.hallName}</td>
@@ -204,7 +214,8 @@ const HallList = () => {
                   <tr>
                     <td colSpan="3">No Halls found.</td>
                   </tr>
-                )}
+                )
+              )}
               </tbody>
             </table>
           </div>

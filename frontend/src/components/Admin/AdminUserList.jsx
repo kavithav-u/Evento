@@ -5,12 +5,13 @@ import {
 } from "../../Slices/adminApiSlice";
 import { toast } from "react-toastify";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
+import Loader from "../user/Loader";
 
 function AdminUserList() {
   const [userData, setUserData] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(7);
-  const [getUserData] = useAdminGetUserMutation();
+  const [getUserData, {isLoading}] = useAdminGetUserMutation();
   const [userAction] = useAdminActionUserMutation();
 
   useEffect(() => {
@@ -72,7 +73,16 @@ function AdminUserList() {
               </tr>
             </thead>
             <tbody className="space-y-2">
-              {currentItems && currentItems.length > 0 ? (
+            {isLoading ? (
+                   <tr>
+                   <td colSpan="5">
+                     <div className="flex justify-center items-center py-8">
+                       <Loader />
+                     </div>
+                   </td>
+                 </tr>
+                ) : (
+              currentItems && currentItems.length > 0 ? (
                 currentItems.map((user) => (
                   <tr key={user?._id}>
                     <td className="py-2">{user?._id}</td>
@@ -114,7 +124,8 @@ function AdminUserList() {
                 <tr>
                   <td colSpan="5">No users found.</td>
                 </tr>
-              )}
+              )
+            )}
             </tbody>
           </table>
         </div>

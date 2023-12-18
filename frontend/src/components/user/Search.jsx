@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Card, Button, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import {useFetchSearchMutation, useFilterSearchMutation } from "../../Slices/usersApiSlice";
-import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
+import {
+  useFetchSearchMutation,
+  useFilterSearchMutation,
+} from "../../Slices/usersApiSlice";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { selectSelectedHallId } from "../../Slices/searchSlice";
 
@@ -22,12 +25,9 @@ const HallList = () => {
   const [fetchSearch] = useFetchSearchMutation();
   const [fetchFilter] = useFilterSearchMutation();
   const selectedHallId = useSelector(selectSelectedHallId);
-console.log( selectedHallId,"sssssssssssssssssss")
- const searchResult=responseArray.filter((e)=>e._id==selectedHallId)
-console.log("response",responseArray )
-console.log("result",searchResult )
-useEffect(() => {
-    // Fetch hall details when the component mounts
+  const searchResult = responseArray.filter((e) => e._id == selectedHallId);
+
+  useEffect(() => {
     fetchHalls();
   }, [sortOrder, currentPage]);
 
@@ -39,31 +39,25 @@ useEffect(() => {
         location: selectedLocation,
         sortOrder: sortOrder,
       };
-      console.log(selectedLocation,"selectedLocation");
-      if (!selectedEventId ) {
+      if (!selectedEventId) {
         const response = await fetchSearch().unwrap();
         const halls = response.halls;
-        console.log(halls,"halls")
         if (halls.length === 0) {
-          // Display toast message for no halls found
-          toast.error('No halls found');
+          toast.error("No halls found");
         } else {
-          console.log("SDfsdfvsdfsd")
-        setResponseArray(halls);
+          setResponseArray(halls);
         }
       } else {
-        console.log("fgfgfgfedcedc")
-        // If a specific event is selected, apply the filter
+    
         const response = await fetchFilter(filters).unwrap();
-        console.log(response,"response")
         const halls = response.filterData;
         if (halls.length === 0) {
-          setResponseArray([])
-          toast.error('No halls found');
+          setResponseArray([]);
+          toast.error("No halls found");
         } else {
-        setResponseArray(halls);
-    }
-  }
+          setResponseArray(halls);
+        }
+      }
       setCurrentPage(1);
     } catch (error) {
       console.error("Error fetching hall details:", error);
@@ -76,25 +70,36 @@ useEffect(() => {
 
   const handleCardClick = async (hallId) => {
     navigate(`/details/${hallId}`);
-  }
+  };
   const indexOfLastHall = currentPage * hallsPerPage;
   const indexOfFirstHall = indexOfLastHall - hallsPerPage;
   const currentHalls = responseArray.slice(indexOfFirstHall, indexOfLastHall);
-  
 
   const fetchHalls = async () => {
     try {
       const res = await fetchSearch().unwrap();
-      console.log(res, "LKLKK");
       const events = res.events;
       const halls = res.halls;
-      console.log(events, "LKLKK");
       setEvents(events);
-      setHalls(halls); 
-    setResponseArray(halls);
+      setHalls(halls);
+      setResponseArray(halls);
     } catch (error) {
       console.error("Error fetching hall details:", error);
     }
+  };
+
+  const handleBookNowClick = (hallId) => {
+    navigate(`/details/${hallId}`);
+  };
+
+  const handleClearFilters = () => {
+    setSelectedEventId("");
+    setSelectedEventType("");
+    setSelectedLocationId("");
+    setSelectedLocation("");
+    setSortOrder("");
+    setCurrentPage(1);
+    fetchHalls(); // Fetch all halls after clearing filters
   };
 
   return (
@@ -113,7 +118,9 @@ useEffect(() => {
                 const selectedId = e.target.value;
                 setSelectedEventId(selectedId);
                 setSelectedEventType(
-                  selectedId ? e.target.options[e.target.selectedIndex].text : ""
+                  selectedId
+                    ? e.target.options[e.target.selectedIndex].text
+                    : ""
                 );
               }}
             >
@@ -146,28 +153,31 @@ useEffect(() => {
         <div className="flex items-center gap-5 mb-4 mt-10">
           <label className="font-semibold">Location</label>
           <select
-    value={selectedLocationId}
-    onChange={(e) => {
-      const selectedId = e.target.value;
-      setSelectedLocationId(selectedId);
-      const selectedLocation = e.target.options[e.target.selectedIndex].text;
-      setSelectedLocation(selectedLocation);
-    }}
-    className="border rounded-lg p-3"
-  >
-    <option value="">All Locations</option>
-    {halls.map((hall) => (
-      <option key={hall._id} value={hall._id}>
-        {hall.location}
-      </option>
-    ))}
-  </select>
+            value={selectedLocationId}
+            onChange={(e) => {
+              const selectedId = e.target.value;
+              setSelectedLocationId(selectedId);
+              const selectedLocation =
+                e.target.options[e.target.selectedIndex].text;
+              setSelectedLocation(selectedLocation);
+            }}
+            className="border rounded-lg p-3"
+          >
+            <option value="">All Locations</option>
+            {Array.from(new Set(halls.map((hall) => hall.location))).map(
+              (location) => (
+                <option key={location} value={location}>
+                  {location}
+                </option>
+              )
+            )}
+          </select>
         </div>
         {/* Sort Row */}
         <div className="flex items-center gap-5 mb-4 mt-10">
           <label className="font-semibold">Sort:</label>
           <select
-            onChange={ (e) => setSortOrder(e.target.value)}
+            onChange={(e) => setSortOrder(e.target.value)}
             value={sortOrder}
             id="sort_order"
             className="border rounded-lg p-3"
@@ -178,25 +188,38 @@ useEffect(() => {
         </div>
 
         {/* Search Row */}
-        <button
-          onClick={handleFilter}
-          className="bg-slate-700 text-white p-3 w-full rounded-lg uppercase hover:opacity-95"
-        >
-          Search
-        </button>
+        <div className="flex space-x-4">
+      {/* Search Button */}
+      <button
+        onClick={handleFilter}
+        className="bg-slate-700 text-white p-3 w-full rounded-lg uppercase hover:opacity-95"
+      >
+        Search
+      </button>
+
+      {/* Clear Filters Button */}
+      <button
+        onClick={handleClearFilters}
+        className="bg-red-700 text-white p-3 w-full rounded-lg uppercase hover:opacity-95"
+      >
+        Clear All
+      </button>
+    </div>
       </div>
 
       <div className="flex-1">
         <h1 className="text-3xl font-semibold border-b p-3 text-slate-700 mt-5">
           Listing results:
         </h1>
-        <div className="p-7 flex flex-wrap gap-4">
+        <div className="p-7 flex flex-wrap">
           {searchResult && searchResult.length > 0 ? (
-            <Row xs={1} md={3} className="g-4">
+            <Row xs={1} md={2} lg={3}>
               {searchResult.map((hall) => (
                 <Col key={hall._id}>
-                  <Card style={{ width: "18rem", margin: "10px" }} 
-                    onClick={() => handleCardClick(hall._id)}>
+                  <Card
+                    style={{ width: "18rem" }}
+                    onClick={() => handleCardClick(hall._id)}
+                  >
                     <Card.Img
                       className="h-64"
                       variant="top"
@@ -214,40 +237,52 @@ useEffect(() => {
                 </Col>
               ))}
             </Row>
+          ) : currentHalls && currentHalls.length > 0 ? (
+            <Row xs={1} md={2} lg={3} className="g-4">
+              {currentHalls.map((hall) => (
+                <Col key={hall._id}>
+                  <Card
+                    style={{
+                      flex:
+                        currentHalls.length > 1
+                          ? "1 0 calc(33.3333% - 20px)"
+                          : "1 0 100%",
+                      margin: "10px",
+                      width: "18rem",
+                    }}
+                    onClick={() => handleCardClick(hall._id)}
+                  >
+                    <Card.Img
+                      className="h-64"
+                      variant="top"
+                      src={hall.hallImage[0]}
+                      alt={hall.hallName}
+                    />
+                    <Card.Body>
+                      <Card.Title>{hall.hallName}</Card.Title>
+                      {hall.description.split(" ").slice(0, 10).join(" ")}...
+                      <Card.Text>${hall.pricePerDay} per Day</Card.Text>
+                      <Card.Text>{hall.location}</Card.Text>
+                      <Button
+                        variant="primary"
+                        onClick={() => handleBookNowClick(hall._id)}
+                      >
+                        Book Now
+                      </Button>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
           ) : (
-            currentHalls && currentHalls.length > 0 ? (
-              <Row xs={1} md={3} className="g-4">
-                {currentHalls.map((hall) => (
-                  <Col key={hall._id}>
-                    <Card style={{ width: "18rem", margin: "10px" }} 
-                      onClick={() => handleCardClick(hall._id)}>
-                      <Card.Img
-                        className="h-64"
-                        variant="top"
-                        src={hall.hallImage[0]}
-                        alt={hall.hallName}
-                      />
-                      <Card.Body>
-                        <Card.Title>{hall.hallName}</Card.Title>
-                        {hall.description.split(" ").slice(0, 10).join(" ")}...
-                        <Card.Text>${hall.pricePerDay} per Day</Card.Text>
-                        <Card.Text>{hall.location}</Card.Text>
-                        <Button variant="primary">Book Now</Button>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-            ) : (
-              <div className="text-center text-gray-700 mt-5">
-                <p>Nothing found</p>
-              </div>
-            )
+            <div className="text-center text-gray-700 mt-5">
+              <p>Nothing found</p>
+            </div>
           )}
         </div>
         {/* Pagination */}
         {responseArray.length > hallsPerPage && (
-          <div className="flex justify-end mt-4">
+          <div className="flex justify-end mt-4 mb-5">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               className={`mx-1 px-3 py-2 rounded ${

@@ -161,7 +161,69 @@ export const userApiSlice = apiSlice.injectEndpoints({
           credentials: 'include',
         }),
       }),
+
+      searchChatUser: builder.mutation({
+        query: (search) => ({
+          url: `${USERS_URL}/chat/search`,
+          method: "get",
+          params: {
+            search: search,
+          },
+          credentials: "include",
+        }),
+      }),
+      accessUserChat: builder.mutation({
+        query: (data) => ({
+          url: `${USERS_URL}/chat`,
+          method: "post",
+          body: data,
+          credentials: "include",
+        }),
+      }),
+      getUserChat: builder.mutation({
+        query: (search) => ({
+          url: `${USERS_URL}/chat`,
+          method: "get",
+          params: {
+            search: search,
+          },
+          credentials: "include",
+        }),
+      }),
+
+      sendMessage: builder.mutation({
+        query: (data) => ({
+          url: `${USERS_URL}/message`,
+          method: "post",
+          body: data,
+          credentials: "include",
+        }),
+      }),
+  
+      getAllmessages: builder.mutation({
+        query: (chatId) => ({
+          url: `${USERS_URL}/message/${chatId}`,
+          method: "get",
+          credentials: "include",
+        }),
+      }),
       
+     newReview : builder.mutation({
+        query: (data) => ({
+          url: `${USERS_URL}/review`,
+          method: "post",
+          body:data,
+          credentials: "include",
+        }),
+      }),
+        fetchReview: builder.mutation({
+        query: (userId) => ({
+          url: `${USERS_URL}/review/${userId}`,
+          method: "get",
+          params: { userId }, 
+          credentials: "include",
+        }),
+      }),
   }),
 });
 
@@ -186,4 +248,11 @@ export const { useLoginMutation,
   useFetchSearchMutation,
 useFilterSearchMutation,
 useElasticSearchMutation,
+useSearchChatUserMutation,
+useAccessUserChatMutation,
+useGetUserChatMutation,
+useSendMessageMutation,
+useGetAllmessagesMutation,
+useNewReviewMutation,
+useFetchReviewMutation
 } = userApiSlice;

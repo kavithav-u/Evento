@@ -120,10 +120,10 @@ export const adminApiSlice = apiSlice.injectEndpoints({
       }),
     }),
     deleteBanner: builder.mutation({
-      query: (data) => ({
-        url: `${ADMIN_URL}/banner/delete`,
-        method: 'post',
-        body:data,
+      query: ( bannerId ) => ({
+        url: `${ADMIN_URL}/banner/${bannerId}`,
+        method: 'delete',
+        params: { bannerId },
         credentials: 'include',
       }),
     }),
@@ -144,7 +144,7 @@ export const adminApiSlice = apiSlice.injectEndpoints({
     }),
     updateAbout: builder.mutation({
       query: (data) => ({
-        url: `${ADMIN_URL}/about/edit`,
+        url: `${ADMIN_URL}/about/${updatedAbout._id}`,
         method: 'put',
         body:data,
         credentials: 'include',

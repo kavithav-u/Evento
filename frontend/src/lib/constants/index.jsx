@@ -1,13 +1,18 @@
+import React from 'react';
 import {
-	HiOutlineViewGrid,
-	HiOutlineShoppingCart,
-	HiOutlineUsers,
-	HiOutlineDocumentText,
+	HiOutlineViewGridAdd,
 	HiOutlineQuestionMarkCircle,
 	HiOutlineCog,
 } from 'react-icons/hi';
-import { PiBeerSteinBold } from "react-icons/pi";
 import { FaUsers } from "react-icons/fa";
+import { IoMdBookmarks } from "react-icons/io";
+import { BsInputCursorText } from "react-icons/bs";
+import { IoChatboxOutline } from "react-icons/io5";
+import { RiFileImageFill } from "react-icons/ri";
+import { MdEvent } from "react-icons/md";
+import { GiIndianPalace } from "react-icons/gi";
+import { VscGraph } from "react-icons/vsc";
+
 
 
 export const DASHBOARD_SIDEBAR_LINKS = [
@@ -15,7 +20,7 @@ export const DASHBOARD_SIDEBAR_LINKS = [
 		key: 'dashboard',
 		label: 'Dashboard',
 		path: '/admin/dashboard',
-		icon: <HiOutlineViewGrid />
+		icon: <VscGraph />
 	},
 	{
 		key: 'userlist',
@@ -23,54 +28,48 @@ export const DASHBOARD_SIDEBAR_LINKS = [
 		path: '/admin/userlist',
 		icon: <FaUsers />
 	},
-	// {
-	// 	key: 'orders',
-	// 	label: 'Orders',
-	// 	path: '/orders',
-	// 	icon: <HiOutlineShoppingCart />
-	// },
 	{
 		key: 'events',
 		label: 'Events',
 		path: '/admin/events',
-		icon: <HiOutlineDocumentText />
+		icon: <MdEvent />
 	},
 	{
 		key: 'halls',
 		label: 'Halls',
 		path: '/admin/halls',
-		icon: <HiOutlineUsers />
-	},
-	{
-		key: 'caterings',
-		label: 'Caterings',
-		path: '/admin/caterings',
-		icon: <PiBeerSteinBold />
+		icon: <GiIndianPalace />
 	},
 	{
 		key: 'banner',
 		label: 'Banners',
 		path: '/admin/banner',
-		icon: <PiBeerSteinBold />
+		icon: <RiFileImageFill />
 	},
 	{
 		key: 'about',
 		label: 'About',
 		path: '/admin/about',
-		icon: <PiBeerSteinBold />
+		icon: <BsInputCursorText />
 	},
 		{
 		key: 'gallery',
 		label: 'Gallery',
 		path: '/admin/gallery',
-		icon: <PiBeerSteinBold />
+		icon: <HiOutlineViewGridAdd />
 	},
 		{
 		key: 'bookings',
 		label: 'Bookings',
 		path: '/admin/bookings',
-		icon: <PiBeerSteinBold />
+		icon: <IoMdBookmarks />
 	},
+	// {
+	// 	key: 'chats',
+	// 	label: 'Chats',
+	// 	path: '/admin/chats',
+	// 	icon: <IoChatboxOutline />
+	// },
 	
 ]
 

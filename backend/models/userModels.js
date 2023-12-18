@@ -22,6 +22,10 @@ const userSchema = mongoose.Schema(
       type:Boolean,
       default:true
    },
+   isChat: {
+    type: Boolean,
+    default: false, 
+    },
     password: {
       type: String,
       required: true,

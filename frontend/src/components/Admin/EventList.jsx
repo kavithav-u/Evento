@@ -9,6 +9,7 @@ import { FaEdit } from "react-icons/fa";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { truncateDescription } from "../user/Banner";
 import { useAdminActionEventsMutation } from "../../Slices/adminApiSlice";
+import Loader from "../user/Loader";
 
 const EventList = () => {
   const [eventData, setEventData] = useState([]);
@@ -19,7 +20,7 @@ const EventList = () => {
   const [editedEventImage, setEditedEventImage] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(7);
-  const [getEventData] = useFetchEventsMutation();
+  const [getEventData, {isLoading}] = useFetchEventsMutation();
   const [toggleEventStatus] = useAdminActionEventsMutation();
   const [updateEventData] = useUpdateEventMutation();
 
@@ -146,7 +147,16 @@ const EventList = () => {
               </tr>
             </thead>
             <tbody className="space-y-2">
-              {currentItems && currentItems.length > 0 ? (
+            {isLoading ? (
+                   <tr>
+                   <td colSpan="5">
+                     <div className="flex justify-center items-center py-8">
+                       <Loader />
+                     </div>
+                   </td>
+                 </tr>
+                ) : (
+              currentItems && currentItems.length > 0 ? (
                 currentItems.map((event) => (
                   <tr key={event?._id}>
                     <td>{event?.eventType}</td>
@@ -154,6 +164,7 @@ const EventList = () => {
                     <td>
                       {event?.eventImage && (
                         <img
+                        loading="lazy"
                           src={event?.eventImage}
                           alt={event?.eventType}
                           width="50"
@@ -193,7 +204,8 @@ const EventList = () => {
                 <tr>
                   <td colSpan="3">No events found.</td>
                 </tr>
-              )}
+              )
+            )}
             </tbody>
           </table>
         </div>

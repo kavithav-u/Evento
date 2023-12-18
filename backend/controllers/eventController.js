@@ -1,63 +1,57 @@
 import Banner from "../models/bannerModel.js";
 import Event from "../models/eventModels.js";
-import  asyncHandler from 'express-async-handler';
-
-
+import asyncHandler from "express-async-handler";
 
 const getAllEvent = async (req, res) => {
-    try {
-      const sortedEvents = await Event.find().sort({ _id: -1 });
-      const Banners = await Banner.findOne({page:'Services'});
-      res.status(200).json({ events: sortedEvents, Banners });
-    } catch (error) {
-      res.status(500).json({ message: "server issue" });
+  try {
+    const sortedEvents = await Event.find().sort({ _id: -1 });
+    const Banners = await Banner.findOne({ page: "Services" });
+    res.status(200).json({ events: sortedEvents, Banners });
+  } catch (error) {
+    res.status(500).json({ message: "server issue" });
+  }
+};
+
+const getAllEvents = async (req, res) => {
+  try {
+    const events = await Event.find({ isActive: true });
+    const Banners = await Banner.findOne({ page: "Services" });
+    res.status(200).json({ events, Banners });
+  } catch (error) {
+    res.status(500).json({ message: "server issue" });
+  }
+};
+
+const newEvent = asyncHandler(async (req, res) => {
+  try {
+    const { eventType, description, eventImage } = req.body;
+
+    let existingEvent = await Event.findOne({ eventType });
+    if (existingEvent) {
+      return res.status(409).json({ message: "Event already exists." });
+    } else {
+      const newEvents = await Event.create({
+        eventType,
+        description,
+        eventImage,
+      });
+      res.status(201).json({
+        event: newEvents,
+        message: "Event Added Successfully",
+        success: true,
+      });
     }
-  };
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
 
-  const getAllEvents = async (req, res) => {
-    try {
-      const events = await Event.find({ isActive: true });
-      const Banners = await Banner.findOne({page:'Services'});
-      res.status(200).json({ events, Banners });
-    } catch (error) {
-      res.status(500).json({ message: "server issue" });
-    }
-  };
+const editEvent = async (req, res) => {
+  try {
+    const { eventType, description, eventImage } = req.body;
+    const eventId = req.body._id;
 
-
-  const newEvent = asyncHandler(async (req, res) => {
-    try {
-      const { eventType, description, eventImage } = req.body;
-
-      let existingEvent = await Event.findOne({ eventType });
-      if (existingEvent) {
-        return res.status(409).json({ message: "Event already exists." });
-      } else {
-        const newEvents = await Event.create({
-          eventType,
-          description,
-          eventImage,
-        });
-        res
-          .status(201)
-          .json({
-            event: newEvents,
-            message: "Event Added Successfully",
-            success: true,
-          });
-      }
-    } catch (error) {
-      return res.status(500).json({ message: "Internal server error" });
-    }
-  });
-
-  const editEvent = async (req,res) => {
-    try {
-      const { eventType, description, eventImage } = req.body;
-      const eventId = req.body._id;
-
-
-      const existingEvent = await Event.findById(eventId);
+    const existingEvent = await Event.findById(eventId);
 
     if (!existingEvent) {
       return res.status(404).json({ message: "Event not found" });
@@ -80,36 +74,25 @@ const getAllEvent = async (req, res) => {
   }
 };
 
-  const adminActionEvent = asyncHandler(async (req, res) => {
-    const { eventId, eventStatus } = req.body;
-    try {
-      const events = await Event.findById(eventId);
-      if (events) {
-        const updateActiveStatus = !events.isActive;
-        events.isActive = updateActiveStatus;
-        await events.save();
+const adminActionEvent = asyncHandler(async (req, res) => {
+  const { eventId, eventStatus } = req.body;
+  try {
+    const events = await Event.findById(eventId);
+    if (events) {
+      const updateActiveStatus = !events.isActive;
+      events.isActive = updateActiveStatus;
+      await events.save();
 
-        res.status(200).json({
-          success: true,
-          isActive: updateActiveStatus,
-        });
-      } else {
-        res.status(404).json({ message: "Catering not found" });
-      }
-    } catch (error) {
-      res
-        .status(500)
-        .json({ success: false, message: "Internal Server error" });
+      res.status(200).json({
+        success: true,
+        isActive: updateActiveStatus,
+      });
+    } else {
+      res.status(404).json({ message: "Catering not found" });
     }
-  });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+});
 
-
-
-
-  export {
-    getAllEvents,
-    newEvent,
-    adminActionEvent,
-    editEvent,
-    getAllEvent
-  };
+export { getAllEvents, newEvent, adminActionEvent, editEvent, getAllEvent };

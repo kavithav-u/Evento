@@ -6,13 +6,18 @@ import {
 } from "../../Slices/adminApiSlice";
 import Switch from "react-switch";
 import BookingModal from "./modal";
+import Loader from "../user/Loader";
+import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
+
 
 const BookingsLists = () => {
   const [bookingData, setBookingData] = useState([]);
   const [checkedState, setCheckedState] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
-  const [fetchBookingsApi] = useFetchUserBookingsMutation();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
+  const [fetchBookingsApi, {isLoading}] = useFetchUserBookingsMutation();
   const [fetchAdminAction] = useAdminActionBookingMutation();
 
   useEffect(() => {
@@ -21,7 +26,7 @@ const BookingsLists = () => {
     setCheckedState(storedCheckedState);
 
     fetchBookings();
-  }, []);
+  }, [currentPage]);
 
   const fetchBookings = async () => {
     try {
@@ -83,6 +88,18 @@ const BookingsLists = () => {
     setSelectedBooking(null);
   };
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = bookingData.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(bookingData.length / itemsPerPage);
+
+  const paginate = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
   return (
     <div>
       <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
@@ -102,11 +119,20 @@ const BookingsLists = () => {
               </tr>
             </thead>
             <tbody className="space-y-2">
-              {bookingData && bookingData.length > 0 ? (
-                bookingData.map((booking) => (
+              {isLoading ? (
+ <tr>
+ <td colSpan="5">
+   <div className="flex justify-center items-center py-8">
+     <Loader />
+   </div>
+ </td>
+</tr>              ) : (
+              currentItems && currentItems.length > 0 ? (
+                currentItems.map((booking) => (
                   <tr key={booking?._id}>
                     <td className="flex flex-col mb-2">
                       <img
+                      loading="lazy"
                         src={booking?.user.image}
                         alt="User Avatar"
                         className="w-8 h-8 rounded-full mb-2 mt-2 ml-9"
@@ -146,9 +172,43 @@ const BookingsLists = () => {
                     <button>Delete</button>
                   </td>
                 </tr>
+              )
               )}
             </tbody>
           </table>
+
+          {/* Pagination controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-end mt-8">
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="mx-2 px-4 py-2 bg-slate-200 text-black rounded-md"
+          >
+            <BsChevronLeft />
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              onClick={() => paginate(i + 1)}
+              className={`mx-2 px-4 py-2 ${
+                currentPage === i + 1
+                  ? "bg-slate-200 text-black"
+                  : "bg-white text-gray-700"
+              } rounded-md`}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="mx-2 px-4 py-2bg-slate-200 text-black rounded-md"
+          >
+            <BsChevronRight />
+          </button>
+        </div>
+      )}
           {/* Modal for booking details */}
           <BookingModal
             isOpen={isModalOpen}

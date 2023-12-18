@@ -23,7 +23,8 @@ const getDetails = async(req,res) => {
     try {
         const hallId = req.params.hallId;
         const Halls = await Hall.find({_id:hallId});
-        const bookings = await Booking.find();
+        const bookings = await Booking.find({hall:Halls});
+        console.log("found Booking", bookings)
         res.status(200).json({ success: true, Halls,bookings });
     } catch (error) {
         res.status(500).json({message:"Internal server error"});
@@ -54,10 +55,9 @@ const getAboutData = async(req,res) => {
 
 const elasticSearch = async (req,res) => {
     try {
-        console.log("Sdfasdfasdfasddfasfaf")
-        console.log(req.body,"req.bodyssss")
+        // console.log(req.body,"req.bodyss")
         const halls = await Hall. find();
-        console.log(halls,"halls")
+        // console.log(halls,"halls")
         res.status(200).json ({success:true, halls})
     } catch (error) {
         res.status(200).json({message:"Internal server error"});
@@ -80,7 +80,7 @@ const getSearchListing = async(req,res) =>{
 
 const filterSearch = async (req, res) => {
     try {
-      console.log(req.body, "sdfasfasf");
+      // console.log(req.body, "sdfasfasf");
       const { sortOrder, eventId, location } = req.body;
   
       let filterData;
@@ -88,21 +88,21 @@ const filterSearch = async (req, res) => {
       if (location === '' || location === 'All Locations') {
         filterData = await Hall.find({ events: eventId });
       } else {
-        console.log("entered else");
+        // console.log("entered else");
         filterData = await Hall.find({ events: eventId, location: location });
-        console.log(filterData, "filterData before sort");
+        // console.log(filterData, "filterData before sort");
       }
 
       if (sortOrder === 'regularPrice_asc') {
 
         filterData.sort((a, b) => a.pricePerDay - b.pricePerDay);
       } else if (sortOrder === 'regularPrice_desc') {
-        console.log("dfasdfadf")
+        // console.log("dfasdfadf")
         filterData.sort((a, b) => b.pricePerDay - a.pricePerDay);
-        console.log("completed Desc sort")
+        // console.log("completed Desc sort")
       }
 
-      console.log(filterData,"filterData")
+      // console.log(filterData,"filterData")
   
       if (res.success === 'false') {
         res.status(200).json({ success: false, message: "No hall found" });

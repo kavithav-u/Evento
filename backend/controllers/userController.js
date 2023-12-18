@@ -37,9 +37,9 @@ const loginUser = asyncHandler(async (req, res) => {
 
   if (user) {
     if (user.isActive) {
-      console.log("sdafasdfasdfdfsfasdfasdfasdfasdfasdf")
+      // console.log("sdafasdfasdfdfsfasdfasdfasdfasdfasdf")
       if (await user.matchPassword(password)) {
-        console.log("entered")
+        // console.log("entered")
         generateToken(res, user._id);
 
         res.json({

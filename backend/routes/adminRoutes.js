@@ -30,10 +30,10 @@ router.post('/caterings/new', adminAuthProtect,addNewCatering);
 router.get('/banner',adminAuthProtect,getAllBanner);
 router.post('/banner/new',adminAuthProtect,newBanner)
 router.put('/banner/edit',adminAuthProtect,editBanner)
-router.post('/banner/delete',adminAuthProtect,deleteBanner)
+router.delete('/banner/:bannerId',adminAuthProtect,deleteBanner)
 router.get('/about',adminAuthProtect,getAbout);
 router.post('/about/new',adminAuthProtect,newAbout);
-router.put('/about/edit', adminAuthProtect,updateAbout);
+router.put('/about/:about', adminAuthProtect,updateAbout);
 router.post('/about/delete', adminAuthProtect,deleteAbout);
 router.get('/gallery',adminAuthProtect,getGallery);
 router.post('/gallery/new',adminAuthProtect,newGallery);

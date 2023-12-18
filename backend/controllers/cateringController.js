@@ -1,48 +1,52 @@
-import Catering from '../models/cateringModels.js';
+import Catering from "../models/cateringModels.js";
 import Event from "../models/eventModels.js";
-import asyncHandler from 'express-async-handler';
+import asyncHandler from "express-async-handler";
 
-
-
-const getAllCaterings = asyncHandler(async (req,res) => {
-    try {
-        const Caterings = await Catering. find().sort({_id:-1});
-        res.status(200).json({success:true, Caterings})
-    } catch (error) {
-        res.status(500).json({message:"Internal Server Error"})
-    }
+const getAllCaterings = asyncHandler(async (req, res) => {
+  try {
+    const Caterings = await Catering.find().sort({ _id: -1 });
+    res.status(200).json({ success: true, Caterings });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
-
-const getEventsDetails = async(req,res) => {
-    try{
-        const events = await Event.find();
-        res.status(200).json({events})
-    } catch (error) {
-        res.status(500).json({message:"Internal server error"})
-    }
-}
+const getEventsDetails = async (req, res) => {
+  try {
+    const events = await Event.find();
+    res.status(200).json({ events });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 const addNewCatering = asyncHandler(async (req, res) => {
-    try {
-        const {itemName, description, itemImages, price, isVeg, events} =  req.body;
-        let existingItem = await Catering.findOne ({itemName});
-        if(existingItem) {
-            return res.status(409).json({message:'Item already exists'})
-        } else {
-            const newCatering = await Catering.create ({
-                itemName,
-                description,
-                itemImages,
-                price, 
-                isVeg,
-                events
-            });
-            res.status(201).json({message:"New Item added succefuly", success:true, Catering:newCatering})
-         }
-        } catch (error) {
-            res.status(500).json({message:"Internal Server Error"})
-        }
+  try {
+    const { itemName, description, itemImages, price, isVeg, events } =
+      req.body;
+    let existingItem = await Catering.findOne({ itemName });
+    if (existingItem) {
+      return res.status(409).json({ message: "Item already exists" });
+    } else {
+      const newCatering = await Catering.create({
+        itemName,
+        description,
+        itemImages,
+        price,
+        isVeg,
+        events,
+      });
+      res
+        .status(201)
+        .json({
+          message: "New Item added succefuly",
+          success: true,
+          Catering: newCatering,
+        });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 const adminActionCatering = async (req, res) => {
@@ -69,12 +73,10 @@ const adminActionCatering = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-  
-
 
 export {
-    getAllCaterings,
-    addNewCatering,
-    adminActionCatering,
-    getEventsDetails
-}
+  getAllCaterings,
+  addNewCatering,
+  adminActionCatering,
+  getEventsDetails,
+};

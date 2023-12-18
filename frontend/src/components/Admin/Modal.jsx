@@ -14,6 +14,7 @@ const BookingModal = ({ isOpen, onClose, booking }) => {
 <div className="bg-gray-800 w-full max-w-md p-4 rounded-lg  text-white" onClick={onClose}>
         <div className="w-2/2 p-4 rounded-lg shadow-md text-white">
           <img
+            loading="lazy"
             src={booking?.hall?.hallImage[0]}
             alt="Hall Image"
             className="w-full h-auto mb-4 rounded-t-lg"

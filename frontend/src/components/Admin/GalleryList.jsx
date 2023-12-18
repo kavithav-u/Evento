@@ -7,6 +7,7 @@ import {
   useFetchGalleryMutation,
   useUpdateGalleryMutation,
 } from "../../Slices/adminApiSlice";
+import Loader from "../user/Loader";
 
 const GalleryList = () => {
   const [galleryData, setGalleryData] = useState([]);
@@ -14,7 +15,7 @@ const GalleryList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editedDescription, setEditedDescription] = useState("");
   const [editedImage, setEditedImage] = useState("");
-  const [getGalleryData] = useFetchGalleryMutation();
+  const [getGalleryData , {isLoading}] = useFetchGalleryMutation();
   const [updateGalleryData] = useUpdateGalleryMutation();
   const [deleteGallery] = useDeleteGalleryMutation();
 
@@ -114,7 +115,16 @@ const GalleryList = () => {
                 </tr>
               </thead>
               <tbody className="space-y-2">
-                {galleryData && galleryData.length > 0 ? (
+              {isLoading ? (
+                   <tr>
+                   <td colSpan="5">
+                     <div className="flex justify-center items-center py-8">
+                       <Loader />
+                     </div>
+                   </td>
+                 </tr>
+                ) : (
+                galleryData && galleryData.length > 0 ? (
                   galleryData.map((gallery) => (
                     <tr key={gallery?._id}>
                       <td>{gallery?.description}</td>
@@ -152,7 +162,8 @@ const GalleryList = () => {
                       <button>Delete</button>
                     </td>
                   </tr>
-                )}
+                )
+              )}
               </tbody>
             </table>
           </div>

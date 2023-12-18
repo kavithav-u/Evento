@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector  } from "react-redux";
 import UserHeader from '../../components/user/userHeader.jsx';
 import Footer from '../../components/user/Footer.jsx';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -7,16 +8,16 @@ import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { useFetchHomeMutation } from '../../Slices/usersApiSlice.js';
 import { EventCard } from '../../components/user/Banner.jsx';
-import Chats from '../SupportEngine/Chat.jsx';
-// import SupportChat from '../SupportEngine/SupportChat.jsx';
-// import Avatar from '../SupportEngine/Avatar.jsx';
+import Loader from '../../components/user/Loader.jsx';
 
 const UserHomeScreen = () => {
   const [banner, setBanner] = useState([]);
   const [recentBookings, setRecentBookings] = useState([]);
-  const [fetchHome] = useFetchHomeMutation();
+  const [fetchHome, {isLoading}] = useFetchHomeMutation();
   const navigate = useNavigate();
+  const { userInfo } = useSelector((state) => state.auth);
 
+console.log(userInfo,"userInfo")
   useEffect(() => {
     fetchData();
   },[]);
@@ -38,7 +39,7 @@ const UserHomeScreen = () => {
 
   const handleCardClick = async (eventId) => {
     console.log(eventId,":eventId")
-    // window.scrollTo(0, 0);
+    window.scrollTo(0, 0);
     navigate(`/listing/${eventId}`);
 
   }
@@ -46,9 +47,14 @@ const UserHomeScreen = () => {
   return (
     <div>
       <UserHeader />
-      <Chats />
-      {/* <Avatar /> */}
+
+
       <div className="swiper-container" style={{ height: '80vh' }}>
+      {isLoading ? (
+        <div className='w-full h-56'>
+        <Loader /> 
+        </div>
+      ) : (
         <Swiper
           spaceBetween={10}
           slidesPerView={1}
@@ -57,22 +63,30 @@ const UserHomeScreen = () => {
           style={{ height: '100%' }}
         >
           {banner?.image?.map((image, index) => (
-            <SwiperSlide key={index}>
-              <div
-                className="swiper-image"
-                style={{
-                  backgroundImage: `url(${image})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  height: '100%',
-                }}
-              />
-            </SwiperSlide>
+           <SwiperSlide key={index}>
+           <div
+             className="swiper-image"
+             style={{
+               height: '100%',
+               position: 'relative',
+             }}
+           >
+             <img
+               loading="lazy"
+               decoding="async"
+               src={image}
+               alt={`Swiper Image ${index}`}
+               className="w-full h-full object-cover"
+             />
+           </div>
+         </SwiperSlide>
           ))}
         </Swiper>
+        )}
       </div>
+             
 
-      <div className="elementor-section flex items-center justify-center p-5">
+      <div className="elementor-section flex items-center justify-center p-5 ">
         <div className="elementor-container">
           <div
             className="elementor-element elementor-widget elementor-widget-heading text-center"
@@ -137,8 +151,12 @@ const UserHomeScreen = () => {
         </div>
       </div>
 
-      <div className="elementor-section flex items-center justify-center p-5">
-        {/* Other content here */}
+      <div className="elementor-section flex items-center justify-center p-5"style={{ zIndex: 5 }}>
+        {isLoading ? (
+          <Loader className='pt-5' />
+        ) : (
+
+
         <div className="flex flex-wrap justify-center">
         {recentBookings.map((event) => (
             <EventCard 
@@ -148,6 +166,8 @@ const UserHomeScreen = () => {
             />
           ))}
         </div>
+                  
+                  )}
       </div>
       <Footer />
     </div>
