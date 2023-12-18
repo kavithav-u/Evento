@@ -10,8 +10,13 @@ import userRoutes from './routes/userRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import chatRouter from './routes/chatRoute.js';
 import messageRouter from './routes/messageRouter.js';
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 connectDB();
 const app = express();
 
@@ -19,6 +24,8 @@ app.use((req, res, next) => {
     res.set("Cache-Control", "no-store, no-cache");
      next();
     });
+  
+
   
 
 app.use(express.json());
@@ -30,9 +37,15 @@ app.use('/api/users/admin',adminRoutes);
 app.use("/api/users/chat", chatRouter);
 app.use("/api/users/message", messageRouter);
 
-app.get('/', (req, res) => res.send('Server is Ready'));
-app.use(notFound);
+// app.get('/', (req, res) => res.send('Server is Ready'));
+app.use(express.static(path.join(__dirname, 'dist'), { type: 'module' }));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
 app.use(errorHandler);
+app.use(notFound);
+
 
 const server = app.listen(port, () => console.log(`Server started on port ${port}`));
 
