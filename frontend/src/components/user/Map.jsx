@@ -14,7 +14,7 @@ style={{
     height:"40vh",
     width: "100%",
     marginTop: "20px",
-    zIndex: 10000000000,
+    zIndex: 1,
     backgroundColor:'red'
 }} >
     <TileLayer url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'  />

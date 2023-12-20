@@ -37,7 +37,6 @@ const Events = () => {
         <img
           loading="lazy"
           src={banner.image}
-          alt="Banner Image"
           className="object-cover h-96 w-full"
         />
         {/* <div className="absolute inset-0 bg-gradient-to-t from-transparent via-black to-transparent opacity-70"></div> */}

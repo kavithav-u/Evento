@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/userModels.js";
 import dotenv from "dotenv";
+import Hall from '../models/hallModels.js';
 dotenv.config();
 import { generateAdminToken } from "../utils/generateToken.js";
 import Booking from "../models/bookingsSchema.js";
@@ -87,6 +88,35 @@ const getDashboard = async (req, res) => {
         $sort: { "_id.year": 1, "_id.month": 1 },
       },
     ]);
+    const eventWiseSales = await Booking.aggregate([
+      {
+        $match: {
+          status: "confirmed",
+        },
+      },
+      {
+        $lookup: {
+          from: "Hall", // Replace with the actual collection name where the Hall model is stored
+          localField: "hall",
+          foreignField: "_id",
+          as: "hallInfo",
+        },
+      },
+      {
+        $unwind: "$hallInfo",
+      },
+      {
+        $group: {
+          _id: {
+            event: "$hallInfo.events",
+            month: { $month: "$createdAt" },
+            year: { $year: "$createdAt" },
+          },
+          totalSales: { $sum: { $toDouble: "$totalAmount" } },
+        },
+      },
+    ]);
+      console.log(eventWiseSales,"eventWiseSales")
     // console.log(monthlySales, "monthlSales");
     const TotalSales = await Booking.aggregate([
       {
@@ -106,6 +136,7 @@ const getDashboard = async (req, res) => {
         TotalSales,
         monthlySales,
         booking,
+        eventWiseSales,
         TotalUsers,
       });
   } catch (error) {
@@ -113,5 +144,8 @@ const getDashboard = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+
+
 
 export { adminLogout, adminLogin, getUserList, adminAction, getDashboard };

@@ -9,6 +9,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import Testimonials from "../../components/user/review.jsx";
 
+
 const Listing = () => {
   const { eventId } = useParams();
   const [halls, setHalls] = useState([]);

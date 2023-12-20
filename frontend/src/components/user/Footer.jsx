@@ -3,7 +3,7 @@ import { Container, Row, Col, ListGroup, ListGroupItem } from "reactstrap";
 
 function Footer() {
   return (
-    <footer className="footer py-8 bg-black">
+    <footer className="footer py-8 bg-black  pt-2 border-t border-black">
   <Container>
     <Row>
       <Col lg="3" md="4" sm="6">
@@ -18,18 +18,19 @@ function Footer() {
       </Col>
 
       <Col lg="3" md="4" sm="6">
-        <h5 className="footer__title text-lg font-semibold  text-white bg-black">Quick Links</h5>
-        <ListGroup className="deliver__time-list">
-        <ListGroupItem className="delivery__time-item border-0 ps-0 bg-black text-gray-700">
-            <span className="font-semibold text-lg to-black ">Home</span>
-          </ListGroupItem>
-          <ListGroupItem className="delivery__time-item border-0 ps-0 bg-black">
+        <h5 className="footer__title text-lg font-semibold  text-white ">Quick Links</h5>
+        <ListGroup className="deliver__time-list ">
+
+          <ListGroupItem className="delivery__time-item border-0 ps-0 bg-black text-white">
+  <span className="font-semibold text-lg">Home</span>
+</ListGroupItem>
+          <ListGroupItem className="delivery__time-item border-0 ps-0 bg-black text-white">
             <span className="font-semibold text-lg">About Us</span>
           </ListGroupItem>
-          <ListGroupItem className="delivery__time-item border-0 ps-0 bg-black text-gray-700">
+          <ListGroupItem className="delivery__time-item border-0 ps-0 bg-black text-white">
             <span className="font-semibold text-lg ">Services</span>
           </ListGroupItem>
-          <ListGroupItem className="delivery__time-item border-0 ps-0 bg-black text-gray-700">
+          <ListGroupItem className="delivery__time-item border-0 ps-0 bg-black text-white">
             <span className="font-semibold text-lg ">Gallery</span>
           </ListGroupItem>
           
@@ -39,13 +40,13 @@ function Footer() {
       <Col lg="3" md="4" sm="6">
         <h5 className="footer__title text-lg text-gray-700 font-semibold">Contact</h5>
         <ListGroup className="deliver__time-list">
-        <ListGroupItem className="delivery__time-item border-0 ps-0 bg-black text-gray-700">
+        <ListGroupItem className="delivery__time-item border-0 ps-0 bg-black text-white">
             <p>Location: Bangalore</p>
           </ListGroupItem>
-          <ListGroupItem className="delivery__time-item border-0 ps-0 bg-black text-gray-700">
+          <ListGroupItem className="delivery__time-item border-0 ps-0 bg-black text-white">
             <span className="font-semibold text-lg">Phone: 9876543210</span>
           </ListGroupItem>
-          <ListGroupItem className="delivery__time-item border-0 ps-0 bg-black text-gray-700">
+          <ListGroupItem className="delivery__time-item border-0 ps-0 bg-black text-white">
             <span className="font-semibold text-lg">Email: example@gmail.com</span>
           </ListGroupItem>
         </ListGroup>

@@ -18,7 +18,7 @@ const DashboardCards = () => {
 
       try {
         const res = await dashboardAPI().unwrap();
-        console.log(res,"resss");
+        console.log("eventSalws",res,"resss");
         const totalSales = res.TotalSales || [];
         const totalUsers = res.TotalUsers;
         const booking = res.booking;

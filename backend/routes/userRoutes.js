@@ -53,5 +53,5 @@ router.get("/search", getSearchListing);
 router.post("/search", filterSearch);
 router.post("/elasticSearch", elasticSearch);
 router.post('/review',newReview)
-router.get('/review/:userId',getAllReview)
+router.get('/review',getAllReview)
 export default router;

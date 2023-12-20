@@ -2,9 +2,9 @@ import Booking from "../models/bookingsSchema.js";
 
 import crypto from "crypto";
 
-function generateUuid(length) {
-  return crypto.randomBytes(length).toString("hex");
-}
+function generateUuid(prefix,length) {
+  const randomBytes = crypto.randomBytes(length);
+  return `${prefix}-${randomBytes.toString("hex")}`;}
 
 const getBookings = async (req, res) => {
   try {
@@ -40,6 +40,8 @@ const getAllBookings = async (req, res) => {
       await Booking.findByIdAndUpdate(booking._id, { orderId });
     }
 
+    const allBookings = await Booking.find();
+
     const bookings = await Booking.find()
       .populate({ path: "user" })
       .populate({
@@ -49,7 +51,8 @@ const getAllBookings = async (req, res) => {
         },
       })
       .exec();
-    res.status(200).json({ success: true, bookings });
+      console.log(bookings,"bookingsss")
+    res.status(200).json({ success: true, bookings,allBookings });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "server issue" });
@@ -62,17 +65,11 @@ const newBookings = async (req, res) => {
     const { hall, totalAmount, startDate, endDate, totalDays, user } = req.body;
     console.log(hall,"hall");
 
-    // const existingBooking = await Booking.findOne({
-    //   hall,
-    //   startDate: {$lte : endDate},
-    //   endDate : {$gte : startDate}
-    // });
+    const orderIdPrefix = "EV";
+    const orderIdLength = 16;
 
-    // if(existingBooking) {
-    //   console.log(existingBooking,"existingBooking")
-    //   return res.json({sucess:false, message:"Hall in already booked for the Dates"})
-    // } else {
-    const orderId = generateUuid(16);
+    // Generate orderId with the fixed prefix
+    const orderId = generateUuid(orderIdPrefix, orderIdLength);
     const newBooking = await Booking.create({
       orderId,
       hall,

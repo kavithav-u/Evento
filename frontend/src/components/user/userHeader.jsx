@@ -64,7 +64,7 @@ const UserHeader = () => {
 const suggestionClickHandler = (hallId) => {
   const hallName = hallId.hallName;
   
-  dispatch(setSelectedHallId(hallId._id));
+  dispatch(setSelectedHallId(hallId?._id));
 
   setInput(hallName);
 

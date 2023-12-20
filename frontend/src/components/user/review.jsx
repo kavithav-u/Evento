@@ -5,6 +5,8 @@ import {
 } from "../../Slices/usersApiSlice";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+
 
 const Testimonials = () => {
   const [reviews, setReviews] = useState([]);
@@ -12,15 +14,20 @@ const Testimonials = () => {
   const [AccessUserChatApi] = useAccessUserChatMutation();
   const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.auth);
-  const userId = userInfo._id;
-  // console.log(userId, "usersId");
+  const [showWarning, setShowWarning] = useState(false);
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetchReview(userId).unwrap();
+        const res = await fetchReview().unwrap();
+        
         const data = res.reviews;
-        setReviews(data);
+        console.log(data,"resdfsdsdsfd")
+        const filteredReviews = userInfo
+        ? data.filter((review) => review.user._id !== userInfo._id)
+        : data;
+        setReviews(filteredReviews);
       } catch (error) {
         console.error("Error fetching reviews:", error);
       }
@@ -31,9 +38,16 @@ const Testimonials = () => {
 
   const handleChatClick = async (userId) => {
     try {
-      const data = await AccessUserChatApi({ userId }).unwrap();
+      if (!userInfo) {
+        // Redirect to the login page if the user is not logged in
+        toast.warning("Please log in to use the chat feature.");
+        navigate("/login");
 
+        return;
+      } 
+      const data = await AccessUserChatApi({ userId }).unwrap();
       navigate("/chat");
+      
     } catch (error) {
       console.log("catch");
     }

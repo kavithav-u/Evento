@@ -217,10 +217,9 @@ export const userApiSlice = apiSlice.injectEndpoints({
         }),
       }),
         fetchReview: builder.mutation({
-        query: (userId) => ({
-          url: `${USERS_URL}/review/${userId}`,
+        query: () => ({
+          url: `${USERS_URL}/review`,
           method: "get",
-          params: { userId }, 
           credentials: "include",
         }),
       }),
