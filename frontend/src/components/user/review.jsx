@@ -23,6 +23,7 @@ const Testimonials = () => {
         const res = await fetchReview().unwrap();
         
         const data = res.reviews;
+        console.log(res,"resd")
         const filteredReviews = userInfo
         ? data.filter((review) => review.user._id !== userInfo._id)
         : data;
@@ -115,7 +116,6 @@ const Testimonials = () => {
                 <div className="p-4 flex-grow">
                   <p className="text-gray-700 flex-grow">{review.comment}</p>
                   <div className="text-sm text-gray-600 flex items-center">
-                    <span>- {review.user.name}</span>
                     {/* Chat Button */}
                     <button
                       className="bg-slate-600 text-white px-3 py-1 rounded hover:bg-red-600 ml-auto"

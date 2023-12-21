@@ -22,11 +22,8 @@ const getBookings = async (req, res) => {
         },
       })
       .exec();
- console.log("bookings",)
       for (const booking of bookings) {
-        console.log("dddddddddddddddd")
         if (new Date(booking.endDate) < currentDate && booking.status !== 'canceled') {
-          console.log("sssssssssss")
           booking.status = 'expired';
           await booking.save();
         }
@@ -43,7 +40,6 @@ const getAllBookings = async (req, res) => {
       orderId: { $exists: false },
     });
 
-    // Generate and assign orderId for each booking without orderId
     for (const booking of bookingsWithoutOrderId) {
       const orderId = generateUuid(16);
       await Booking.findByIdAndUpdate(booking._id, { orderId });
@@ -60,7 +56,6 @@ const getAllBookings = async (req, res) => {
         },
       })
       .exec();
-      console.log(bookings,"bookingsss")
     res.status(200).json({ success: true, bookings,allBookings });
   } catch (error) {
     console.error(error);

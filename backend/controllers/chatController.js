@@ -14,7 +14,6 @@ const searchUsers = expressAsyncHandler(async (req, res) => {
 
   const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
 
-  // console.log("user", users);
   res.send(users);
 });
 
