@@ -23,7 +23,8 @@ const Testimonials = () => {
         const res = await fetchReview().unwrap();
         
         const data = res.reviews;
-        console.log(res,"resd")
+
+        console.log(data[0].user,"resd")
         const filteredReviews = userInfo
         ? data.filter((review) => review.user._id !== userInfo._id)
         : data;
@@ -32,6 +33,7 @@ const Testimonials = () => {
         console.error("Error fetching reviews:", error);
       }
     };
+    console.log(reviews,"reviews")
 
     fetchData();
   }, []);
@@ -86,7 +88,7 @@ const Testimonials = () => {
                           objectFit: "cover",
                         }}
                         src={
-                          review.user.image ||
+                          review?.user?.image ||
                           "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png"
                         }
                         alt={`Review ${index + 1}`}
@@ -114,12 +116,15 @@ const Testimonials = () => {
 
                 {/* Review Content and Meta */}
                 <div className="p-4 flex-grow">
-                  <p className="text-gray-700 flex-grow">{review.comment}</p>
+                  <p className="text-gray-700 flex-grow">{review?.comment}</p>
                   <div className="text-sm text-gray-600 flex items-center">
+                    {/* Display user name in the review */}
+                    <p className="mr-2">By {review?.user?.name}</p>
+
                     {/* Chat Button */}
                     <button
                       className="bg-slate-600 text-white px-3 py-1 rounded hover:bg-red-600 ml-auto"
-                      onClick={() => handleChatClick(review.user._id)}
+                      onClick={() => handleChatClick(review?.user?._id)}
                     >
                       Chat
                     </button>

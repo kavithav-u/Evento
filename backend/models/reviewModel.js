@@ -5,18 +5,14 @@ const schema= mongoose.Schema;
 const reviewSchema = new mongoose.Schema(
   {
     user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', // Reference to the user who wrote the review
+      type: schema.Types.ObjectId,
+      ref: 'User', 
       required: true,
     },
-    // event: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: 'Event', // Reference to the event being reviewed
-    //   required: true,
-    // },
+
     hall: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Hall', // Reference to the event being reviewed
+        type: schema.Types.ObjectId,
+        ref: 'Hall', 
         required: true,
       },
     rating: {
