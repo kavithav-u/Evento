@@ -39,17 +39,14 @@ const Events = () => {
           src={banner.image}
           className="object-cover h-96 w-full"
         />
-        {/* <div className="absolute inset-0 bg-gradient-to-t from-transparent via-black to-transparent opacity-70"></div> */}
         <div className="absolute inset-0 flex items-center justify-center text-white text-center">
           <h1 className="text-4xl md:text-6xl font-bold">Our Services</h1>
-          {/* <p className="text-lg md:text-2xl mt-4">Your banner description goes here.</p> */}
         </div>
       </div>
 
       <div className="flex items-center justify-center flex-col h-[600px] bg-white">
         <h2 className="text-gray-600 body-font font-adelia">We Offer</h2>
         {isLoading ? (
-          // Render Loader component while events are being fetched
           <Loader />
         ) : (
           <Swiper
@@ -81,7 +78,6 @@ const Events = () => {
                     />
                     <div className="absolute inset-0 bg-black opacity-10 group-hover:opacity-50" />
                     <div className="relative flex flex-col gap-3">
-                      {/* <item.icon className="text-blue-600 group-hover:text-blue-400 w-[32px] h-[32px]" /> */}
                       <h1 className="text-xl lg:text-2xl text-white">
                         {event?.eventType}{" "}
                       </h1>

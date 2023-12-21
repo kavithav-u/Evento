@@ -9,19 +9,16 @@ import { FaLocationDot } from "react-icons/fa6";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import Testimonials from "../../components/user/review.jsx";
 
-
 const Listing = () => {
   const { eventId } = useParams();
   const [halls, setHalls] = useState([]);
   const [fetchHallsByEventId, { isLoading }] = useFetchListingMutation();
 
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6; // Adjust the number of items per page as needed
-
+  const itemsPerPage = 6;
   useEffect(() => {
     fetchData();
-  }, [currentPage]); // Include currentPage in the dependency array
+  }, [currentPage]);
 
   const fetchData = async () => {
     try {
@@ -32,12 +29,10 @@ const Listing = () => {
     }
   };
 
-  // Calculate the index of the last and first item on the current page
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = halls.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (

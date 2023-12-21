@@ -19,7 +19,6 @@ const GalleryComponent = () => {
   const fetchImages = async () => {
     try {
       const res = await fetchGalleryImages().unwrap();
-      // console.log(res, "KJHKJHKJH");
       const myGallery = res.gallery;
       setImages(myGallery);
     } catch (err) {

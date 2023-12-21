@@ -23,7 +23,6 @@ const Testimonials = () => {
         const res = await fetchReview().unwrap();
         
         const data = res.reviews;
-        console.log(data,"resdfsdsdsfd")
         const filteredReviews = userInfo
         ? data.filter((review) => review.user._id !== userInfo._id)
         : data;

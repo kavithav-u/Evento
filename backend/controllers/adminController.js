@@ -69,6 +69,56 @@ const adminLogout = (req, res) => {
 
 const getDashboard = async (req, res) => {
   try {
+    const aggregatePipeline = [
+      // Lookup with Hall collection
+      {
+        $lookup: {
+          from: 'halls',
+          localField: 'hall',
+          foreignField: '_id',
+          as: 'hallData',
+        },
+      },
+      // Unwind the array created by the lookup
+      {
+        $unwind: '$hallData',
+      },
+      // Lookup with Event collection
+      {
+        $lookup: {
+          from: 'events',
+          localField: 'hallData.events',
+          foreignField: '_id',
+          as: 'eventData',
+        },
+      },
+      // Unwind the array created by the second lookup
+      {
+        $unwind: '$eventData',
+      },
+      // Group by event and calculate total sales
+      {
+        $group: {
+          _id: '$eventData._id',
+          eventType: { $first: '$eventData.eventType' },
+          totalSales: { $sum: { $toInt: '$totalAmount' } }, // Convert totalAmount to integer if it's stored as a string
+        },
+      },
+    ];
+    
+    // Execute the aggregation pipeline
+    Booking.aggregate(aggregatePipeline)
+      .then(result => {
+        console.log(result,"GGGG");
+        
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    
+      const eventSales = await Booking.aggregate(aggregatePipeline);
+      console.log("month",eventSales)
+
     const monthlySales = await Booking.aggregate([
       {
         $match: {
@@ -88,36 +138,7 @@ const getDashboard = async (req, res) => {
         $sort: { "_id.year": 1, "_id.month": 1 },
       },
     ]);
-    const eventWiseSales = await Booking.aggregate([
-      {
-        $match: {
-          status: "confirmed",
-        },
-      },
-      {
-        $lookup: {
-          from: "Hall", // Replace with the actual collection name where the Hall model is stored
-          localField: "hall",
-          foreignField: "_id",
-          as: "hallInfo",
-        },
-      },
-      {
-        $unwind: "$hallInfo",
-      },
-      {
-        $group: {
-          _id: {
-            event: "$hallInfo.events",
-            month: { $month: "$createdAt" },
-            year: { $year: "$createdAt" },
-          },
-          totalSales: { $sum: { $toDouble: "$totalAmount" } },
-        },
-      },
-    ]);
-      console.log(eventWiseSales,"eventWiseSales")
-    // console.log(monthlySales, "monthlSales");
+   
     const TotalSales = await Booking.aggregate([
       {
         $group: {
@@ -136,7 +157,7 @@ const getDashboard = async (req, res) => {
         TotalSales,
         monthlySales,
         booking,
-        eventWiseSales,
+        eventSales,
         TotalUsers,
       });
   } catch (error) {

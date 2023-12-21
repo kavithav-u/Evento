@@ -14,10 +14,8 @@ L.Marker.prototype.options.icon = DefaulIcon
 
 
 const GeoCoderMarker = ({location}) => {
-    // console.log(location,"location at geeocoder")
     const map = useMap()
     const [position, setPosition] = useState([60, 19])
-    // console.log(position,"position")
     useEffect(()=> {
         ELG.geocode().text(location).run((err, results, response)=> {
 

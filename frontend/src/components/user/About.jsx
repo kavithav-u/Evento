@@ -31,10 +31,8 @@ const About = () => {
           alt="Banner Image"
           className="object-cover h-96 w-full mt-2"
         />
-        {/* <div className="absolute inset-0 bg-gradient-to-t from-transparent via-black to-transparent opacity-70"></div> */}
         <div className="absolute inset-0 flex items-center justify-center text-white text-center">
           <h1 className="text-4xl md:text-6xl font-bold">About Us</h1>
-          {/* <p className="text-lg md:text-2xl mt-4">Your banner description goes here.</p> */}
         </div>
       </div>
       {aboutData.length > 0 && (

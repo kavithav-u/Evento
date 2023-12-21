@@ -4,6 +4,19 @@ import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+    resolve: {
+    alias: {
+      '@coreui/react': '@coreui/react',
+      '@coreui/coreui': '@coreui/coreui',
+    },
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import '@coreui/coreui/dist/css/coreui.min.css';`,
+      },
+    },
+  },
   server: {
     port: 3000,
     proxy: {

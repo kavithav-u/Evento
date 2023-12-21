@@ -30,7 +30,7 @@ const BookingList = () => {
     try {
       const _id = userInfo._id;
       const res = await getBookingdata(_id).unwrap();
-      // console.log(res, "Dfd");
+
       const myBookings = res.bookings;
       if (res.notActive) {
         dispatch(logout());
@@ -46,7 +46,6 @@ const BookingList = () => {
     setSelectedBooking(booking);
     setIsModalOpen(true);
   };
-  console.log(selectedBooking, "selectedBooking");
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -59,7 +58,6 @@ const BookingList = () => {
   const cancelBooking = async (bookingId) => {
     try {
       const response = await cancelBookingApi(bookingId);
-      // console.log(response, "responce");
       setBookingData((prevBookingData) =>
         prevBookingData.map((booking) =>
           booking._id === selectedBooking._id
@@ -189,13 +187,13 @@ const BookingList = () => {
                               <div className="card-header p-4">
                                 <div className="d-flex justify-content-between align-items-center">
                                   <div>
-                                    <p className="text-muted mb-2">
+                                    <p className="text-black mb-2">
                                       Order ID{" "}
                                       <span className="fw-bold text-body">
                                         {selectedBooking.orderId}
                                       </span>
                                     </p>
-                                    <p className="text-muted mb-0">
+                                    <p className="text-black mb-0">
                                       Place On{" "}
                                       <span className="fw-bold text-body">
                                         {selectedBooking.createdAt
@@ -214,17 +212,19 @@ const BookingList = () => {
                                     <h5 className="bold">
                                       {selectedBooking.hall?.hallName}
                                     </h5>
-                                    <p className="text-muted">
+                                    <p className="text-black">
+                                      Location: {selectedBooking.hall?.location}
+                                    </p>
+                                    <p className="text-black">
+                                      Event: {selectedBooking.hall?.events?.eventType}
+                                    </p>
+                                    <p className="text-black">
                                       Booked For: {booking.totalDays} Days
                                     </p>
-                                    <h4 className="mb-3">
-                                      $ {selectedBooking.totalAmount}{" "}
-                                      <span className="small text-muted">
-                                        {" "}
-                                        via (COD){" "}
-                                      </span>
-                                    </h4>
-                                    <p className="text-muted p-2">
+                                    <p className="text-black">
+                                      Payment: Online
+                                    </p>
+                                    <p className="text-black">
                                       Dates:{" "}
                                       <span className="text-body">
                                         {" "}
@@ -240,6 +240,9 @@ const BookingList = () => {
                                     <p className="text-black">
                                       Status: {selectedBooking.status}
                                     </p>
+                                    <p className=" bold">
+                                      Total Amount: Rs. {selectedBooking.totalAmount}
+                                    </p>
                                   </div>
                                   <div>
                                     <img
@@ -250,6 +253,9 @@ const BookingList = () => {
                                     />
                                   </div>
                                 </div>
+                                <p className="text-center text-blue-500">
+                            Thanks for your Order, {selectedBooking?.user?.name}
+                          </p>
                               </div>
                               <div className="card-footer p-4">
                                 <div className="d-flex justify-content-between">

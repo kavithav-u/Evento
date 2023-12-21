@@ -9,6 +9,7 @@ function generateUuid(prefix,length) {
 const getBookings = async (req, res) => {
   try {
     const userId = req.params.userId;
+    const currentDate = new Date(); 
     const bookings = await Booking.find({ user: userId })
     .sort({ createdAt: -1 })
       .populate({ path: "user" })
@@ -21,7 +22,15 @@ const getBookings = async (req, res) => {
         },
       })
       .exec();
-
+ console.log("bookings",)
+      for (const booking of bookings) {
+        console.log("dddddddddddddddd")
+        if (new Date(booking.endDate) < currentDate && booking.status !== 'canceled') {
+          console.log("sssssssssss")
+          booking.status = 'expired';
+          await booking.save();
+        }
+      }
     res.status(200).json({ bookings });
   } catch (error) {
     res.status(500).json({ message: "server issue" });
