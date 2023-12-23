@@ -27,8 +27,9 @@ const BannerList = () => {
   }, [currentPage]);
 
   const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
+    const files = Array.from(e.target.files);
+    const imageUrls = [];
+    for (const file of files) {
       try {
         const formData = new FormData();
         formData.append("file", file);
@@ -42,11 +43,12 @@ const BannerList = () => {
           }
         );
         const data = await response.json();
-        setEditedImage(data.secure_url);
+        imageUrls.push(data.secure_url);
         toast.success("Image uploaded successfully to Cloudinary");
       } catch (err) {
         toast.error("Error uploading image to Cloudinary");
       }
+      setEditedImage([...editedImage, ...imageUrls]);
     }
   };
 
@@ -301,7 +303,7 @@ const BannerList = () => {
                   htmlFor="image"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
-                  Image URL:
+                  Image:
                 </label>
                 <input
                   type="file"
@@ -309,6 +311,7 @@ const BannerList = () => {
                   onChange={(e) => handleImageUpload(e)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
                   placeholder="Enter image URL"
+                  multiple
                 />
                 <br />
 

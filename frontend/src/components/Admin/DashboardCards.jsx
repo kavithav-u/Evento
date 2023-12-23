@@ -37,13 +37,13 @@ const DashboardCards = () => {
   return (
     <div className="flex flex-wrap">
     {/* Sales Component */}
-    {sales.map((sale) => (
-      <div key={sale.id} className="w-full sm:w-1/2 xl:w-1/3 p-3">
+    {sales?.map((sale) => (
+      <div key={sale?.id} className="w-full sm:w-1/2 xl:w-1/3 p-3">
         <div className="bg-white border rounded-lg p-3">
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <h3 className="text-lg font-semibold mb-0">Sales</h3>
-              <p className="text-success ml-2 mb-0 font-medium">{sale.totalSales}</p>
+              <p className="text-success ml-2 mb-0 font-medium">{sale?.totalSales}</p>
             </div>
             <div className="flex-grow text-right">
               <div className="bg-success-200 text-success p-2 rounded-full">

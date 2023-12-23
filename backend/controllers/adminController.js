@@ -9,14 +9,15 @@ import Booking from "../models/bookingsSchema.js";
 const adminLogin = asyncHandler(async (req, res) => {
   try {
     const { email, password } = req.body;
-    // console.log("req.body", req.body);
+    console.log("req.body", req.body);
     if (
       email === process.env.AdminEmail &&
       password === process.env.AdminPassword
     ) {
-      // console.log("admin login");
+      console.log("admin login");
 
       generateAdminToken(res, email);
+      console.log("dddddddddd")
       res.status(200).json({ success: true, email, message: "login sucesss" });
     } else {
       res.json({ message: "Invalid email or password" });

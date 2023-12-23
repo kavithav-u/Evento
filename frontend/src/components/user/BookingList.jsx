@@ -80,24 +80,24 @@ const BookingList = () => {
 
   return (
     <div>
-      <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 bg py-4 overflow-x-auto">
+      <div className="mx-4 sm:-mx-8 px-4 sm:px-8 bg py-4 overflow-x-auto">
         <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
           <table className="min-w-full leading-normal">
             <thead>
               <tr>
-                <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 sm:w-1/6 md:w-1/6 lg:w-1/6 xl:w-1/6 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   SL NO.
                 </th>
                 <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Event
                 </th>
-                <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 sm:w-1/6 md:w-1/6 lg:w-1/6 xl:w-1/6border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Amount
                 </th>
-                <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 sm:w-1/6 md:w-1/6 lg:w-1/6 xl:w-1/6 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   City
                 </th>
-                <th className="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 sm:w-1/6 md:w-1/6 lg:w-1/6 xl:w-1/6 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   View
                 </th>
 
@@ -117,10 +117,10 @@ const BookingList = () => {
                 currentItems?.map((booking, index) => (
                   <React.Fragment key={booking._id}>
                     <tr>
-                      <td className="px-4 py-3 border-b border-gray-200 bg-white text-sm text-black">
+                      <td className="px-4 py-3 sm:w-1/6 md:w-1/6 lg:w-1/6 xl:w-1/6 border-b border-gray-200 bg-white text-sm text-black">
                         {index + 1}
                       </td>
-                      <td className="px-4 py-3 border-b border-gray-200 bg-white text-sm ml-36">
+                      <td className="px-4 py-3 sm:w-1/6 md:w-1/6 lg:w-1/6 xl:w-1/6 border-b border-gray-200 bg-white text-sm ml-36">
                         <div className="flex flex-col ">
                           <img
                             className="w-10 h-10 rounded-full"
@@ -130,13 +130,13 @@ const BookingList = () => {
                           <div>{booking.hall.events?.eventType}</div>
                         </div>
                       </td>
-                      <td className="px-4 py-3 border-b border-gray-200 bg-white text-sm">
+                      <td className="px-4 py-3 sm:w-1/6 md:w-1/6 lg:w-1/6 xl:w-1/6 border-b border-gray-200 bg-white text-sm">
                         {booking.totalAmount}
                       </td>
-                      <td className="px-4 py-3 border-b border-gray-200 bg-white text-sm">
+                      <td className="px-4 py-3 sm:w-1/6 md:w-1/6 lg:w-1/6 xl:w-1/6 border-b border-gray-200 bg-white text-sm">
                         {booking.hall?.location}
                       </td>
-                      <td className=" px-4 py-3 border-b border-gray-200 bg-white text-sm">
+                      <td className=" px-4 py-3 sm:w-1/6 md:w-1/6 lg:w-1/6 xl:w-1/6 border-b border-gray-200 bg-white text-sm">
                         <button
                           className="btn"
                           onClick={() => handleBooking(booking)}
@@ -155,10 +155,7 @@ const BookingList = () => {
                         aria-hidden="true"
                         className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center"
                       >
-                        {/* Modal content */}
-                        <div className="relative">
-                          {/* Modal header */}
-
+                        <div className="w-full max-w-lg mx-auto">
                           <button
                             type="button"
                             onClick={closeModal}
@@ -179,55 +176,52 @@ const BookingList = () => {
                               ></path>
                             </svg>
                           </button>
-
-                          {/* Modal body */}
-
-                          <div className="row d-flex justify-content-center align-items-center h-100">
-                            <div className="card card-stepper">
-                              <div className="card-header p-4">
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <div>
-                                    <p className="text-black mb-2">
-                                      Order ID{" "}
-                                      <span className="fw-bold text-body">
-                                        {selectedBooking.orderId}
-                                      </span>
-                                    </p>
-                                    <p className="text-black mb-0">
-                                      Place On{" "}
-                                      <span className="fw-bold text-body">
-                                        {selectedBooking.createdAt
-                                          ? new Date(
-                                              selectedBooking.createdAt
-                                            ).toLocaleDateString()
-                                          : "N/A"}
-                                      </span>
-                                    </p>
-                                  </div>
-                                </div>
+                          <div className="bg-white p-6 rounded-lg shadow-md">
+                            <div className="row d-flex justify-content-center align-items-center h-100">
+                              <div className="text-black mb-2">
+                                Order ID{" "}
+                                <span className="fw-bold text-body">
+                                  {selectedBooking.orderId}
+                                </span>
                               </div>
-                              <div className="card-body p-4">
-                                <div className="d-flex flex-row mb-4 pb-2">
-                                  <div className="flex-fill">
-                                    <h5 className="bold">
-                                      {selectedBooking.hall?.hallName}
-                                    </h5>
+                              <div className="text-black mb-0">
+                                Placed On{" "}
+                                <span className="fw-bold text-body">
+                                  {selectedBooking.createdAt
+                                    ? new Date(
+                                        selectedBooking.createdAt
+                                      ).toLocaleDateString()
+                                    : "N/A"}
+                                </span>
+                              </div>
+                              <div className="card card-stepper">
+                                <div className="card-header p-4 text-center">
+                                  <div className="mb-6">
+                                    <img
+                                      className="mx-auto w-1/2 h-auto rounded-lg shadow-xl dark:shadow-gray-800 p-1"
+                                      src={selectedBooking.hall?.hallImage[0]}
+                                      alt={`Hall Image`}
+                                    />
+                                  </div>
+                                  <h5 className="bold">
+                                    {selectedBooking.hall?.hallName}
+                                  </h5>
+                                </div>
+                                <div className="card-body p-4 flex justify-between">
+                                  <div>
                                     <p className="text-black">
                                       Location: {selectedBooking.hall?.location}
                                     </p>
                                     <p className="text-black">
-                                      Event: {selectedBooking.hall?.events?.eventType}
+                                      Event:{" "}
+                                      {selectedBooking.hall?.events?.eventType}
                                     </p>
                                     <p className="text-black">
                                       Booked For: {booking.totalDays} Days
                                     </p>
                                     <p className="text-black">
-                                      Payment: Online
-                                    </p>
-                                    <p className="text-black">
                                       Dates:{" "}
                                       <span className="text-body">
-                                        {" "}
                                         {new Date(
                                           selectedBooking.startDate
                                         ).toLocaleDateString()}{" "}
@@ -237,35 +231,31 @@ const BookingList = () => {
                                         ).toLocaleDateString()}
                                       </span>
                                     </p>
+                                  </div>
+                                  <div className="text-right">
                                     <p className="text-black">
                                       Status: {selectedBooking.status}
                                     </p>
                                     <p className=" bold">
-                                      Total Amount: Rs. {selectedBooking.totalAmount}
+                                      Total Amount: Rs.{" "}
+                                      {selectedBooking.totalAmount}
+                                    </p>
+                                    <p className="text-black">
+                                      Payment: Online
                                     </p>
                                   </div>
-                                  <div>
-                                    <img
-                                      className=" h-auto max-w-lg rounded-lg shadow-xl dark:shadow-gray-800 p-1"
-                                      src={selectedBooking.hall?.hallImage[0]}
-                                      alt={`Hall Image `}
-                                      width="250"
-                                    />
-                                  </div>
                                 </div>
-                                <p className="text-center text-blue-500">
-                            Thanks for your Order, {selectedBooking?.user?.name}
-                          </p>
-                              </div>
-                              <div className="card-footer p-4">
-                                <div className="d-flex justify-content-between">
-                                  <h5 className="fw-normal mb-0">
-                                    {selectedBooking.status !== "canceled" && (
-                                      <button onClick={openConfirmationModal}>
-                                        Cancel Booking
-                                      </button>
-                                    )}
-                                  </h5>
+                                <div className="card-footer p-4">
+                                  <div className="d-flex justify-content-between">
+                                    <h5 className="fw-normal mb-0">
+                                      {selectedBooking.status !==
+                                        "canceled" && (
+                                        <button onClick={openConfirmationModal}>
+                                          Cancel Booking
+                                        </button>
+                                      )}
+                                    </h5>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -312,7 +302,7 @@ const BookingList = () => {
       )}
 
       {/* Pagination */}
-      <div className="flex justify-end">
+      <div className="flex justify-end pb-2">
         <button
           onClick={() => setCurrentPage(currentPage - 1)}
           className={`mx-1 px-3 py-2 rounded ${

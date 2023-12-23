@@ -8,8 +8,9 @@ dotenv.config();
 const adminAuthProtect =  asyncHandler(async(req,res,next) => {
     try {
     let token;
+    console.log("req.cookies.jwtttttttttttttttt",req.cookies.jwtAdmin);
 
-    token = req.cookies.jwt;
+    token = req.cookies.jwtAdmin;
     console.log(token,"tokennn")
     if(token) {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)

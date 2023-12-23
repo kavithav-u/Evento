@@ -1,5 +1,9 @@
 import React from 'react';
 import { Container, Row, Col, ListGroup, ListGroupItem } from "reactstrap";
+import { FaFacebookSquare } from "react-icons/fa";
+import { FaLinkedinIn } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
+
 
 function Footer() {
   return (
@@ -8,7 +12,7 @@ function Footer() {
     <Row>
       <Col lg="3" md="4" sm="6">
         <div className="footer__logo text-start">
-          <img alt="logo" className="w-[calc(100% - 80%)] mb-2" />
+          <img alt="logo" src='./public/evento (1).png' className="w-10 mb-2" />
           <h5 className="font-semibold text-lg mb-3">Evento</h5>
           <p className="text-gray-600 text-sm">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt
@@ -75,24 +79,20 @@ function Footer() {
           <p className="m-0 text-gray-700 text-sm">Follow: </p>
           <span>
             <a href="https://www.facebook.com">
-              <i className="ri-facebook-line text-white bg-red-500 rounded-full p-1"></i>
+             <FaFacebookSquare className='text-white bg-red-500 rounded-full p-1 w-5 h-5'/>
             </a>
           </span>
           <span>
-            <a href="https://github.com">
-              <i className="ri-github-line text-white bg-red-500 rounded-full p-1"></i>
+            <a href="https://www.linkedin.com/">
+            <FaLinkedinIn className='text-white bg-red-500 rounded-full p-1 w-5 h-5'/>
             </a>
           </span>
           <span>
-            <a href="https://www.youtube.com">
-              <i className="ri-youtube-line text-white bg-red-500 rounded-full p-1"></i>
+            <a href="https://github.com/kavithav-u/Evento">
+            <FaGithub className='text-white bg-red-500 rounded-full p-1 w-5 h-5'/>
             </a>
           </span>
-          <span>
-            <a href="https://www.linkedin.com">
-              <i className="ri-linkedin-line text-white bg-red-500 rounded-full p-1"></i>
-            </a>
-          </span>
+
         </div>
       </Col>
     </Row>

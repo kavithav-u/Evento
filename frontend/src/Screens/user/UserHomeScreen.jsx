@@ -51,7 +51,7 @@ console.log(userInfo,"userInfo")
 
       <div className="swiper-container" style={{ height: '80vh' }}>
       {isLoading ? (
-        <div className='w-full h-56'>
+        <div className='w-full h-56 pt-20'>
         <Loader /> 
         </div>
       ) : (

@@ -96,6 +96,11 @@ const suggestionClickHandler = (hallId) => {
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
         <Link to="/" className='no-underline'>
           <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
+              <img
+              src="./public/evento (1).png"
+              alt="Evento Logo"
+              className="w-8 h-8 mr-2"
+            />
             <span className="text-slate-500">Evento</span>
           </h1>
         </Link>
@@ -175,7 +180,7 @@ const suggestionClickHandler = (hallId) => {
 )}
 
             {isDropdownOpen && userInfo && (
-              <div className="absolute bg-black mt-2 p-2 rounded-lg shadow-lg">
+              <div className="absolute bg-black mt-2  rounded-lg shadow-lg right-0">
                 <Link to="/profile" className="block py-2 px-4  text-white hover:bg-slate-600 no-underline">
                   Profile
                 </Link>

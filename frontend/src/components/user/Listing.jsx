@@ -18,6 +18,7 @@ const Listing = () => {
   const itemsPerPage = 6;
   useEffect(() => {
     fetchData();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentPage]);
 
   const fetchData = async () => {
@@ -85,7 +86,7 @@ const Listing = () => {
       <Testimonials />
 
       {/* Pagination */}
-      <div className="flex justify-end mt-4">
+      <div className="flex justify-end mt-4 mb-2">
         <button
           onClick={() => setCurrentPage(currentPage - 1)}
           className={`mx-1 px-3 py-2 rounded ${

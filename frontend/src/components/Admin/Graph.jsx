@@ -82,10 +82,10 @@ const Graph = () => {
   };
 
   const pieChartData = {
-    labels: eventSales.map((event) => event.eventType),
+    labels: eventSales.map((event) => event?.eventType),
     datasets: [
       {
-        data: eventSales.map((event) => event.totalSales),
+        data: eventSales.map((event) => event?.totalSales),
         backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'], // Customize colors as needed
       },
     ],
