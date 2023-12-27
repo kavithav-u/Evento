@@ -23,13 +23,10 @@ const Testimonials = () => {
         const res = await fetchReview().unwrap();
         
         const data = res.reviews;
-        console.log(res,"res.reviews")
 
-        console.log(data[0].user,"resd")
         const filteredReviews = userInfo
         ? data.filter((review) => review?.user?._id !== userInfo?._id)
         : data;
-        console.log("filteredReviews",filteredReviews)
         setReviews(filteredReviews);
       } catch (error) {
         console.error("Error fetching reviews:", error);

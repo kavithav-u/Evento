@@ -12,7 +12,7 @@ function Footer() {
     <Row>
       <Col lg="3" md="4" sm="6">
         <div className="footer__logo text-start">
-          <img alt="logo" src='./public/evento (1).png' className="w-10 mb-2" />
+          <img alt="logo" src='/evento (1).png' className="w-10 mb-2" />
           <h5 className="font-semibold text-lg mb-3">Evento</h5>
           <p className="text-gray-600 text-sm">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt
