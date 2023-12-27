@@ -23,17 +23,19 @@ const Testimonials = () => {
         const res = await fetchReview().unwrap();
         
         const data = res.reviews;
+        console.log(res.reviews,"res.reviews")
 
         console.log(data[0].user,"resd")
         const filteredReviews = userInfo
-        ? data.filter((review) => review.user._id !== userInfo._id)
+        ? data.filter((review) => review?.user?._id !== userInfo?._id)
         : data;
+        console.log("filteredReviews",filteredReviews)
         setReviews(filteredReviews);
       } catch (error) {
         console.error("Error fetching reviews:", error);
       }
     };
-    console.log(reviews,"reviews")
+    console.log(reviews,"reviews");
 
     fetchData();
   }, []);
@@ -66,7 +68,7 @@ const Testimonials = () => {
       </div>
       <div className="container mx-auto">
         <div className="flex flex-wrap -mx-4">
-          {reviews.map((review, index) => (
+          {reviews?.map((review, index) => (
             <div
               key={index}
               className="w-full md:w-1/2 px-4 mb-8 flex items-stretch"

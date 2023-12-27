@@ -97,7 +97,7 @@ const suggestionClickHandler = (hallId) => {
         <Link to="/" className='no-underline'>
           <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
               <img
-              src="./public/evento (1).png"
+              src="/evento (1).png"
               alt="Evento Logo"
               className="w-8 h-8 mr-2"
             />
