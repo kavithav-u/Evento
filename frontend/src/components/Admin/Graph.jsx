@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { useAdminDashboardMutation } from "../../Slices/adminApiSlice";
 import Chart from "chart.js/auto";
-import { Pie } from "react-chartjs-2";
+// import { Pie } from "react-chartjs-2";
 
 const Graph = () => {
   const [monthlySales, setMonthlySales] = useState([]);
@@ -100,8 +100,9 @@ const Graph = () => {
     ],
   };
 
-  console.log("pieChartData", pieChartData);console.log('Labels:', labels);
-  console.log('Datasets:', chartData.datasets);
+  // console.log("pieChartData", pieChartData);
+  // console.log('Labels:', labels);
+  // console.log('Datasets:', chartData.datasets);
 
   return (
     <div>
@@ -111,15 +112,15 @@ const Graph = () => {
           <Bar className="p-7" data={chartData} options={chartOptions} />
         )}
       </div>
-      <div className="mt-4 bg-gray-200 p-4 rounded-lg">
+      {/* <div className="mt-4 bg-gray-200 p-4 rounded-lg"> */}
         {/* Pie Chart Component */}
-        <div className="w-full" style={{ maxWidth: "400px", margin: "0 auto" }}>
+        {/* <div className="w-full" style={{ maxWidth: "400px", margin: "0 auto" }}>
           <h2 className="text-center underline">Event Wise Sales</h2>
           <div className="bg-white border rounded-lg p-3">
             {eventSales.length > 0 && <Pie data={pieChartData} />}
           </div>
-        </div>
-      </div>
+        </div> */}
+      {/* </div> */}
     </div>
   );
 };
