@@ -23,7 +23,7 @@ const Testimonials = () => {
         const res = await fetchReview().unwrap();
         
         const data = res.reviews;
-        console.log(res.reviews,"res.reviews")
+        console.log(res,"res.reviews")
 
         console.log(data[0].user,"resd")
         const filteredReviews = userInfo

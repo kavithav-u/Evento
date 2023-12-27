@@ -42,7 +42,7 @@ const getAllReview =  async(req,res) => {
     res.status(200).json({success:true,message:"success", reviews})
 
   } catch (error) {
-    res.status(500).json({message:":server Error"})
+    res.status(500).json({message:"server Error"})
 
 }
 }

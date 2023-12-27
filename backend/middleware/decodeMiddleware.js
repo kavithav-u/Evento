@@ -10,7 +10,6 @@ const checkUserStatus = asyncHandler(async (req, res, next) => {
       if (user.isActive) {
         next();
       } else {
-        // User is not active, clear the JWT cookie and log them out
         res.clearCookie('jwt');
         res.json({notActive:true, message: 'User is blocked' });
       }
