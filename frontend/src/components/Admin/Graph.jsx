@@ -47,6 +47,7 @@ const Graph = () => {
     }
   };
 
+  console.log(eventSales,"eventSales")
   const chartData = {
     labels,
     datasets: [
@@ -99,7 +100,8 @@ const Graph = () => {
     ],
   };
 
-  console.log("pieChartData", pieChartData);
+  console.log("pieChartData", pieChartData);console.log('Labels:', labels);
+  console.log('Datasets:', chartData.datasets);
 
   return (
     <div>
