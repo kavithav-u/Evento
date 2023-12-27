@@ -18,7 +18,7 @@ const DashboardCards = () => {
 
       try {
         const res = await dashboardAPI().unwrap();
-        console.log("eventSalws",res,"resss");
+        // console.log("eventSalws",res,"resss");
         const totalSales = res.TotalSales || [];
         const totalUsers = res.TotalUsers;
         const booking = res.booking;
@@ -31,14 +31,14 @@ const DashboardCards = () => {
     }
   };
 
-  console.log("totalSales", sales, "total", users)
+  // console.log("totalSales", sales, "total", users)
 
 
   return (
     <div className="flex flex-wrap">
     {/* Sales Component */}
-    {sales?.map((sale) => (
-      <div key={sale?.id} className="w-full sm:w-1/2 xl:w-1/3 p-3">
+    {sales?.map((sale, index) => (
+      <div key={`sale-${index}`} className="w-full sm:w-1/2 xl:w-1/3 p-3">
         <div className="bg-white border rounded-lg p-3">
           <div className="flex items-center">
             <div className="flex-shrink-0">

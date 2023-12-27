@@ -139,6 +139,9 @@ const getDashboard = async (req, res) => {
         $sort: { "_id.year": 1, "_id.month": 1 },
       },
     ]);
+    console.log("Matched bookings:", monthlySales.length);
+console.log("Monthly sales:", monthlySales);
+    console.log("monthly sales", monthlySales);
    
     const TotalSales = await Booking.aggregate([
       {
