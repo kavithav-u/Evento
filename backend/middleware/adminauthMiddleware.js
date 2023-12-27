@@ -8,7 +8,7 @@ dotenv.config();
 const adminAuthProtect =  asyncHandler(async(req,res,next) => {
     try {
     let token;
-    console.log("req.cookies.jwtttttttttttttttt",req.cookies.jwtAdmin);
+    console.log("req.cookies.jwt",req.cookies.jwtAdmin);
 
     token = req.cookies.jwtAdmin;
     console.log(token,"tokennn")

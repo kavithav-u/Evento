@@ -31,7 +31,7 @@ const Graph = () => {
       const sales = salesData.monthlySales;
       const EventWiseSales = salesData.eventSales;
       setEventSales(EventWiseSales);
-      const data = labels.map((month) => {
+      const data = labels?.map((month) => {
         const matchingEntry = sales.find((entry) => entry._id.month === month);
         return matchingEntry ? matchingEntry.totalSales : 0;
       });
@@ -82,11 +82,11 @@ const Graph = () => {
   };
 
   const pieChartData = {
-    labels: eventSales.map((event) => event?.eventType),
+    labels: eventSales?.map((event) => event?.eventType),
     datasets: [
       {
-        data: eventSales.map((event) => event?.totalSales),
-        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'], // Customize colors as needed
+        data: eventSales?.map((event) => event?.totalSales),
+        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'], 
       },
     ],
   };
